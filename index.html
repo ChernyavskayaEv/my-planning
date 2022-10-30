@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="card-dialog/card-dialog.css" />
     <script
       src="https://kit.fontawesome.com/2adfb96d3c.js"
       crossorigin="anonymous"
@@ -11,86 +12,37 @@
     <title>My learning plan</title>
   </head>
   <body>
-    <div class="board-box blur">
+    <div class="board-box">
+      <card-dialog></card-dialog>
       <div class="column">
-        <div class="title-column">Изучить</div>
-        <div class="placeholder">
-          <div class="card" draggable="true">
-            text text text text text text text text text text text
-          </div>
-          <div class="card" draggable="true">text</div>
-        </div>
-        <a href="#" class="add-card">Добавить карточку</a>
-      </div>
-      <div class="column">
-        <div class="title-column">В работе</div>
-        <div class="placeholder">
-          <div class="card" draggable="true">text</div>
-        </div>
-        <a href="#" class="add-card">Добавить карточку</a>
-      </div>
-      <div class="column">
-        <div class="title-column">Изучено</div>
-        <div class="placeholder"></div>
-        <a href="#" class="add-card">Добавить карточку</a>
-      </div>
-    </div>
-    <div class="card-modal">
-      <i class="fa-solid fa-xmark close-icon"></i>
-      <div class="block-title">
-        <i class="fa-regular fa-credit-card"></i>
-        <div class="card-field-title">
+        <div class="title-column">
           <input
-            class="card-title"
+            class="column-title"
             type="text"
-            placeholder="Введите название карточки"
-            name="title"
+            placeholder="Введите название"
+            name="title_column"
           />
+          <a href="#" class="add-column"></a>
         </div>
-      </div>
-      <div class="block-description">
-        <i class="fa-solid fa-align-justify icon-description-modal opacity"></i>
-        <div class="add-description">Добавить описание</div>
-        <div class="card-description hide">
-          <div class="description">Описание:</div>
-          <textarea
-            class="textarea-description"
-            placeholder="Добавьте описание"
-            name="description"
-          ></textarea>
-        </div>
-      </div>
-
-      <div class="block-list">
-        <i class="fa-regular fa-square-check icon-list-modal opacity"></i>
-        <div class="add-list">Добавить чек-лист</div>
-        <div class="card-list hide">
-          <input
-            class="list-title"
-            type="text"
-            placeholder="Введите название чек-листа"
-            name="list"
-          />
-          <div class="progress-bar hide">
-            <div class="scale">
-              <div class="full-scale"></div>
+        <div class="placeholder">
+          <div class="card-column" draggable="true">
+            <div class="card-title">text</div>
+            <div class="card-footer">
+              <div class="card-description">
+                <i class="fa-solid fa-align-justify icon-description-modal"></i>
+                <div class="textarea-description"></div>
+              </div>
+              <div class="block-list">
+                <i class="fa-regular fa-square-check icon-list-modal"></i>
+                <div class="card-list"></div>
+              </div>
             </div>
-            <div class="percents">75%</div>
           </div>
-          <a href="#" class="add-list-item">Добавить пункт</a>
         </div>
-      </div>
-      <div class="block-button">
-        <button class="save-button" type="button">Сохранить</button>
+        <a href="#" class="add-card">Добавить карточку</a>
       </div>
     </div>
-    <div class="clarification-block hide">
-      Сохранить изменения?
-      <div class="block-button">
-        <button class="button-yes" type="button">Да</button>
-        <button class="button-no" type="button">Отмена</button>
-      </div>
-    </div>
+
     <script src="app.js"></script>
   </body>
 </html>

@@ -1,0 +1,56 @@
+<div class="card-modal hide">
+  <i class="fa-solid fa-xmark close-icon"></i>
+  <div class="block-title">
+    <i class="fa-regular fa-credit-card"></i>
+    <div class="card-field-title">
+      <input
+        class="card-title"
+        type="text"
+        placeholder="Введите название карточки"
+        name="title"
+      />
+    </div>
+  </div>
+  <div class="block-description">
+    <i class="fa-solid fa-align-justify icon-description-modal opacity"></i>
+    <div class="add-description">Добавить описание</div>
+    <div class="card-description hide">
+      <div class="description">Описание:</div>
+      <textarea
+        class="textarea-description"
+        placeholder="Добавьте описание"
+        name="description"
+      ></textarea>
+    </div>
+  </div>
+
+  <div class="block-list">
+    <i class="fa-regular fa-square-check icon-list-modal opacity"></i>
+    <div class="add-list">Добавить чек-лист</div>
+    <div class="card-list hide">
+      <input
+        class="list-title"
+        type="text"
+        placeholder="Введите название чек-листа"
+        name="list"
+      />
+      <div class="progress-bar hide">
+        <div class="scale">
+          <div class="full-scale"></div>
+        </div>
+        <div class="percents">75%</div>
+      </div>
+      <a href="#" class="add-list-item">Добавить пункт</a>
+    </div>
+  </div>
+  <div class="block-button">
+    <button class="save-button" type="button">Сохранить</button>
+  </div>
+</div>
+<div class="clarification-block hide">
+  Сохранить изменения?
+  <div class="block-button">
+    <button class="button-yes" type="button">Да</button>
+    <button class="button-no" type="button">Отмена</button>
+  </div>
+</div>
