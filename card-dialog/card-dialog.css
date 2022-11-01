@@ -185,6 +185,13 @@
   cursor: pointer;
 }
 
+.card-modal .list-item-remove {
+  cursor: pointer;
+  width: 5%;
+  padding: 0 0 0 0.5rem;
+  font-size: 1.2rem;
+}
+
 .card-modal .block-button,
 .clarification-block .block-button {
   display: flex;
@@ -237,4 +244,8 @@
 
 .hide {
   display: none;
+}
+
+.line-through {
+  text-decoration: line-through;
 }

@@ -105,6 +105,7 @@ class CardDialog extends HTMLElement {
       addList: this.querySelector('.add-list'),
       cardList: this.querySelector('.card-list'),
       addListItem: this.querySelector('.add-list-item'),
+      listItems: this.querySelectorAll('.list-item'),
       closeIcon: this.querySelector('.close-icon'),
       savebutton: this.querySelector('.save-button'),
     };
@@ -125,20 +126,50 @@ class CardDialog extends HTMLElement {
 
     this.components.addListItem.addEventListener('click', (event) => {
       event.preventDefault();
+
       document.querySelector('.progress-bar').classList.remove('hide');
+
       const newListItem = document.createElement('div');
       newListItem.classList.add('list-item');
-      newListItem.innerHTML = `<div class="checkbox-item">
-			  <input id="list-item1" class="checkbox-input" type="checkbox" name="item" />
-			  <label class="checkbox-label" for="list-item1"></label>
+      (this.components.listItems = this.querySelectorAll('.list-item')),
+        (newListItem.innerHTML = `<div class="checkbox-item">
+			  <input id="list-item${
+          this.components.listItems.length + 1
+        }" class="checkbox-input" type="checkbox" name="item" disabled = true/>
+			  <label class="checkbox-label" for="list-item${
+          this.components.listItems.length + 1
+        }"></label>
 			</div>
 			<textarea
 			  class="list-item-description"
 			  type="text"
 			  placeholder="Добавьте описание"
-			  name="item-description1"
-			></textarea>`;
+			  name="item-description${this.components.listItems.length + 1}"
+			></textarea>
+      <i class="fa-solid fa-xmark list-item-remove"></i>`);
       this.components.addListItem.before(newListItem);
+
+      newListItem.addEventListener('click', (event) => {
+        if (event.target.classList.contains('list-item-description')) {
+          event.target.onchange = () =>
+            (newListItem.querySelector('.checkbox-input').disabled = false);
+        }
+        if (event.target.classList.contains('checkbox-input')) {
+          const { checked } = event.target;
+          if (checked) {
+            newListItem
+              .querySelector('.list-item-description')
+              .classList.add('line-through');
+          } else {
+            newListItem
+              .querySelector('.list-item-description')
+              .classList.remove('line-through');
+          }
+        }
+        if (event.target.classList.contains('list-item-remove')) {
+          event.target.parentElement.remove();
+        }
+      });
     });
 
     this.components.closeIcon.addEventListener('click', closeCardModal);
