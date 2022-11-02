@@ -100,34 +100,38 @@ class CardDialog extends HTMLElement {
     this.innerHTML = await this.#template;
     this.components = {
       cardModal: this.querySelector('.card-modal'),
+      closeIcon: this.querySelector('.close-icon'),
+      iconDescriptionModal: this.querySelector('.icon-description-modal'),
       addDescription: this.querySelector('.add-description'),
       cardDescription: this.querySelector('.card-description'),
+      iconListModal: this.querySelector('.icon-list-modal'),
       addList: this.querySelector('.add-list'),
       cardList: this.querySelector('.card-list'),
+      progressBar: this.querySelector('.progress-bar'),
+      fullScale: this.querySelector('.full-scale'),
+      percents: this.querySelector('.percents'),
       addListItem: this.querySelector('.add-list-item'),
       listItems: this.querySelectorAll('.list-item'),
-      closeIcon: this.querySelector('.close-icon'),
+      listChecked: this.querySelectorAll('.line-through'),
       savebutton: this.querySelector('.save-button'),
     };
 
     this.components.addDescription.addEventListener('click', () => {
       this.components.addDescription.classList.add('hide');
       this.components.cardDescription.classList.remove('hide');
-      document
-        .querySelector('.icon-description-modal')
-        .classList.remove('opacity');
+      this.components.iconDescriptionModal.classList.remove('opacity');
     });
 
     this.components.addList.addEventListener('click', () => {
       this.components.addList.classList.add('hide');
       this.components.cardList.classList.remove('hide');
-      document.querySelector('.icon-list-modal').classList.remove('opacity');
+      this.components.iconListModal.classList.remove('opacity');
     });
 
     this.components.addListItem.addEventListener('click', (event) => {
       event.preventDefault();
 
-      document.querySelector('.progress-bar').classList.remove('hide');
+      this.components.progressBar.classList.remove('hide');
 
       const newListItem = document.createElement('div');
       newListItem.classList.add('list-item');
@@ -150,9 +154,26 @@ class CardDialog extends HTMLElement {
       this.components.addListItem.before(newListItem);
 
       newListItem.addEventListener('click', (event) => {
+        const scale = () => {
+          this.components.listChecked = this.querySelectorAll('.line-through');
+          this.components.listItems = this.querySelectorAll('.list-item');
+
+          this.components.fullScale.style.width = `${
+            (this.components.listChecked.length /
+              this.components.listItems.length) *
+            100
+          }%`;
+          this.components.percents.innerHTML = `${Math.floor(
+            (this.components.listChecked.length /
+              this.components.listItems.length) *
+              100
+          )}%`;
+        };
+
         if (event.target.classList.contains('list-item-description')) {
           event.target.onchange = () =>
             (newListItem.querySelector('.checkbox-input').disabled = false);
+          scale();
         }
         if (event.target.classList.contains('checkbox-input')) {
           const { checked } = event.target;
@@ -160,14 +181,17 @@ class CardDialog extends HTMLElement {
             newListItem
               .querySelector('.list-item-description')
               .classList.add('line-through');
+            scale();
           } else {
             newListItem
               .querySelector('.list-item-description')
               .classList.remove('line-through');
+            scale();
           }
         }
         if (event.target.classList.contains('list-item-remove')) {
           event.target.parentElement.remove();
+          scale();
         }
       });
     });
