@@ -29,7 +29,15 @@ function addColumns(event) {
     <div class="placeholder"></div>
     <a href="#" class="add-card">Добавить карточку</a>`;
     event.target.parentElement.parentElement.after(newColumn);
-    newColumn.addEventListener('click', (event) => addColumns(event));
+    newColumn.addEventListener('click', (event) => {
+      event.preventDefault();
+      if (event.target.classList.contains('add-column')) {
+        addColumns(event);
+      }
+      if (event.target.classList.contains('add-card')) {
+        addCard(event);
+      }
+    });
 
     //drag-n-drop card in column
     const cards = document.querySelectorAll('.card-column');
@@ -79,8 +87,7 @@ function addColumns(event) {
     }
   }
 }
-
-class CardDialog extends HTMLElement {
+class CardColumn extends HTMLElement {
   #template;
   #data = {
     cardId: '',
@@ -88,6 +95,74 @@ class CardDialog extends HTMLElement {
     cardDescription: '',
     cardList: [],
   };
+
+  set cardId(value) {
+    this.#data.cardId = value;
+  }
+
+  set cardTitle(value) {
+    this.#data.cardTitle = value;
+  }
+
+  set cardDescription(value) {
+    this.#data.cardDescription = value;
+  }
+
+  set cardList(array) {
+    this.#data.cardList = array;
+    console.log('cardcolumn', this.#data);
+  }
+
+  constructor() {
+    super();
+    this.#template = fetch('/card-column/card-column.html').then((res) =>
+      res.text()
+    );
+  }
+
+  async connectedCallback() {
+    this.innerHTML = await this.#template;
+  }
+}
+customElements.define('card-column', CardColumn);
+
+class CardDialog extends HTMLElement {
+  #template;
+  #initialState = {};
+  #data = {
+    cardId: '',
+    cardTitle: '',
+    cardDescription: '',
+    cardList: [],
+  };
+
+  setNewCard() {
+    this.#data = {
+      cardId: Date.now(),
+      cardTitle: '',
+      cardDescription: '',
+      cardList: [],
+    };
+    this.#initialState = { ...this.#data };
+    console.log('CardDialog', this.#initialState);
+  }
+
+  saveNewCard() {
+    const card = document.querySelector('#new');
+    card.id = this.#data.cardId;
+    card.cardId = this.#data.cardId;
+    card.cardTitle = this.components.cardTitle.value;
+    card.cardDescription = this.components.textareaDescription.value;
+    card.cardList = [...this.querySelectorAll('.list-item-description')].map(
+      (el, i) => {
+        return {
+          order: i,
+          description: el.value,
+          checking: el.classList.contains('line-through'),
+        };
+      }
+    );
+  }
 
   constructor() {
     super();
@@ -101,9 +176,11 @@ class CardDialog extends HTMLElement {
     this.components = {
       cardModal: this.querySelector('.card-modal'),
       closeIcon: this.querySelector('.close-icon'),
+      cardTitle: this.querySelector('.card-title'),
       iconDescriptionModal: this.querySelector('.icon-description-modal'),
       addDescription: this.querySelector('.add-description'),
       cardDescription: this.querySelector('.card-description'),
+      textareaDescription: this.querySelector('.textarea-description'),
       iconListModal: this.querySelector('.icon-list-modal'),
       addList: this.querySelector('.add-list'),
       cardList: this.querySelector('.card-list'),
@@ -206,9 +283,14 @@ customElements.define('card-dialog', CardDialog);
 //add card
 function addCard(event) {
   if (event.target.classList.contains('add-card')) {
+    const cardDialog = document.querySelector('card-dialog');
+    cardDialog.setNewCard();
     const cardModal = document.querySelector('.card-modal');
     cardModal.classList.remove('hide');
     boardBox.classList.add('blur');
+    const newCardColumn = document.createElement('card-column');
+    newCardColumn.id = 'new';
+    event.target.previousElementSibling.append(newCardColumn);
   }
 }
 
@@ -230,6 +312,8 @@ function closeCardModal() {
 function saveCardModal() {
   console.log('saveCardModal');
   hideCardModal();
+  const cardModal = document.querySelector('card-dialog');
+  cardModal.saveNewCard();
 }
 
 function hideCardModal() {
@@ -239,12 +323,12 @@ function hideCardModal() {
   boardBox.classList.remove('blur');
 }
 
-document.addEventListener('keyup', (event) => {
-  console.log(event.code);
-  if (
-    event.code === 'Escape' &&
-    !document.querySelector('.card-modal').classList.contains('hide')
-  ) {
-    closeCardModal();
-  }
-});
+// document.addEventListener('keyup', (event) => {
+//   console.log(event.code);
+//   if (
+//     event.code === 'Escape' &&
+//     !document.querySelector('.card-modal').classList.contains('hide')
+//   ) {
+//     closeCardModal();
+//   }
+// });

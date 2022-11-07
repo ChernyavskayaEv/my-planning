@@ -1,12 +1,12 @@
 .card-modal {
   position: fixed;
   background-color: #cfe0e5;
-  border-radius: 0.6vw;
+  border-radius: 0.5rem;
   width: 50vw;
   max-height: 80vh;
   top: 5vw;
   left: 25vw;
-  box-shadow: 1vw 1vw 1vw 1vw rgb(0 0 0 / 20%);
+  box-shadow: 1rem 1rem 1rem 1rem rgb(0 0 0 / 20%);
   padding: 2rem;
   z-index: 10;
   overflow: scroll;
@@ -79,7 +79,7 @@
 
 .card-modal input:focus,
 .card-modal textarea:focus {
-  box-shadow: 0 0 0.5vw #958e8e;
+  box-shadow: 0 0 0.5rem #958e8e;
 }
 
 .card-modal .add-description,
@@ -98,11 +98,11 @@
 }
 
 .card-modal .scale {
-  width: 95%;
+  width: 90%;
   height: 0.5rem;
   background-color: #edf4f5;
   border-radius: 0.5rem;
-  box-shadow: 0 0 0.6vw #958e8e;
+  box-shadow: 0 0 0.5rem #958e8e;
   margin: 0 1rem 0 0;
   position: relative;
 }
@@ -112,7 +112,7 @@
   height: 100%;
   background-color: #adc5cc;
   border-radius: 0.5rem;
-  border: 0.05vw solid #e5eff1;
+  border: 0.1rem solid #e5eff1;
 }
 
 .card-modal .percents {
@@ -122,17 +122,17 @@
   align-items: center;
   justify-content: end;
   position: relative;
-  width: 5%;
+  width: 10%;
 }
 
 .card-modal .list-item {
   display: flex;
   align-items: center;
-  margin: 1vw 0;
+  margin: 1rem 0;
 }
 
 .card-modal .checkbox-item {
-  width: 7%;
+  width: 10%;
 }
 
 .card-modal .checkbox-input {
@@ -145,8 +145,8 @@
   height: 1.5rem;
   color: inherit;
   background-color: #e5eff1;
-  box-shadow: 0.2vw 0.2vw 0.6vw #958e8e;
-  border-radius: 0.2vw;
+  box-shadow: 0.5rem 0.5rem 1rem #958e8e;
+  border-radius: 0.2rem;
 }
 
 .card-modal .checkbox-label {
@@ -175,7 +175,7 @@
 }
 
 .card-modal .list-item-description {
-  width: 95%;
+  width: 80%;
   min-height: 1vw;
   height: max-content;
   margin: 0 1rem 0 0;
@@ -192,7 +192,7 @@
 
 .card-modal .list-item-remove {
   cursor: pointer;
-  width: 5%;
+  width: 10%;
   padding: 0 0.5rem 0 0.5rem;
   font-size: 1.2rem;
   display: flex;
@@ -216,10 +216,10 @@
   text-transform: uppercase;
   letter-spacing: 0.2rem;
   font-weight: 700;
-  text-shadow: 0.2vw 0.2vw 0.6vw #958e8e;
+  text-shadow: 0.5rem 0.5rem 1rem #958e8e;
   cursor: pointer;
-  border-radius: 0.6vw;
-  box-shadow: 0.2vw 0.2vw 0.6vw #958e8e;
+  border-radius: 0.5rem;
+  box-shadow: 0.5rem 0.5rem 1rem #958e8e;
 }
 
 .clarification-block {
@@ -228,11 +228,11 @@
   align-items: center;
   flex-direction: column;
   background-color: #cfe0e5;
-  border-radius: 0.6vw;
+  border-radius: 0.5rem;
   width: 30vw;
   top: 12vw;
   left: 35vw;
-  box-shadow: 1vw 1vw 1vw 1vw rgb(0 0 0 / 20%);
+  box-shadow: 1rem 1rem 1rem 1rem rgb(0 0 0 / 20%);
   padding: 2rem;
   z-index: 20;
 }
@@ -244,7 +244,7 @@
 }
 
 .clarification-block button {
-  width: 11vw;
+  width: 45%;
   padding: 1rem 0;
   margin: 0;
 }

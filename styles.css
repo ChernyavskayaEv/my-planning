@@ -10,6 +10,13 @@
 *:after {
   box-sizing: border-box;
 }
+
+*::-webkit-scrollbar {
+  width: 2px;
+  height: 2px;
+  background-color: #cfe0e5;
+}
+
 :focus,
 :active {
   outline: none;
@@ -85,8 +92,8 @@ body {
   min-width: 100vw;
   height: 100vh;
   display: flex;
-  gap: 1.5vw;
-  padding: 1.5vw;
+  gap: 1.5rem;
+  padding: 1.5rem;
   background-color: #edf4f5;
   overflow-x: scroll;
 }
@@ -94,14 +101,14 @@ body {
 .column {
   width: 300px;
   height: max-content;
-  padding: 1.5vw;
+  padding: 1.5rem;
   display: flex;
   align-items: center;
   flex-direction: column;
   flex-shrink: 0;
   background-color: #cfe0e5;
-  border-radius: 0.6vw;
-  box-shadow: 0.5vw 0.5vw 1vw rgba(0 0 0 / 20%);
+  border-radius: 0.5rem;
+  box-shadow: 0.5rem 0.5rem 1rem rgba(0 0 0 / 20%);
 }
 
 .title-column {
@@ -116,7 +123,7 @@ body {
   font-size: 1.3rem;
   font-weight: bold;
   letter-spacing: 0.1rem;
-  text-shadow: 0.2vw 0.2vw 0.6vw #958e8e;
+  text-shadow: 0.2rem 0.2rem 0.2rem #958e8e;
   color: inherit;
   background-color: inherit;
   cursor: pointer;
@@ -125,7 +132,7 @@ body {
 .add-column::before {
   content: '+';
   font-size: 1.5rem;
-  text-shadow: 0.2vw 0.2vw 0.6vw #958e8e;
+  text-shadow: 0.2rem 0.2rem 0.6rem #958e8e;
   color: #757575;
   margin-left: 1rem;
 }
@@ -146,7 +153,7 @@ body {
 }
 
 .card-column {
-  border-radius: 0.6vw;
+  border-radius: 0.5rem;
   background: #e5eff1;
   padding: 1rem;
   margin-bottom: 1rem;
@@ -176,11 +183,11 @@ body {
 .hold {
   font-weight: bolder;
   background: linear-gradient(90deg, #b2d0d9 0%, #83c2d2 100%);
-  box-shadow: 0.5vw 0.5vw 1vw rgba(0 0 0 / 20%);
+  box-shadow: 0.5rem 0.5rem 1rem rgba(0 0 0 / 20%);
 }
 
 .hovered {
-  border-radius: 0.6vw;
+  border-radius: 0.5rem;
   background: #e5eff1;
 }
 
