@@ -152,7 +152,7 @@ body {
   width: 100%;
 }
 
-.card-column {
+/* .card-column {
   border-radius: 0.5rem;
   background: #e5eff1;
   padding: 1rem;
@@ -166,7 +166,7 @@ body {
 
 .card-column:active {
   cursor: grabbing;
-}
+} */
 
 .add-card,
 .add-list-item {
@@ -180,11 +180,11 @@ body {
   color: #757575;
 }
 
-.hold {
+/* .hold {
   font-weight: bolder;
   background: linear-gradient(90deg, #b2d0d9 0%, #83c2d2 100%);
   box-shadow: 0.5rem 0.5rem 1rem rgba(0 0 0 / 20%);
-}
+} */
 
 .hovered {
   border-radius: 0.5rem;

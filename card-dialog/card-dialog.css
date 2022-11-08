@@ -249,10 +249,10 @@
   margin: 0;
 }
 
-.hide {
+card-dialog .hide {
   display: none;
 }
 
-.line-through {
+card-dialog .line-through {
   text-decoration: line-through;
 }

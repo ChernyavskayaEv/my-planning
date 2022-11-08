@@ -12,6 +12,57 @@ column.addEventListener('click', (event) => {
   }
 });
 
+//drag-n-drop card in column
+function dragDrop() {
+  const cards = document.querySelectorAll('card-column');
+  const placeholders = document.querySelectorAll('.placeholder');
+
+  for (const card of cards) {
+    card.addEventListener('dragstart', dragstart);
+    card.addEventListener('dragend', dragend);
+  }
+
+  function dragstart(event) {
+    event.target.classList.add('hold');
+    setTimeout(() => event.target.classList.add('hide'), 0);
+  }
+
+  function dragend(event) {
+    event.target.classList.remove('hold');
+    event.target.classList.remove('hide');
+    event.target.showContent();
+  }
+
+  for (const placeholder of placeholders) {
+    placeholder.addEventListener('dragover', dragover);
+    placeholder.addEventListener('dragenter', dragenter);
+    placeholder.addEventListener('dragleave', dragleave);
+    placeholder.addEventListener('drop', dragdrop);
+  }
+
+  function dragover(event) {
+    event.preventDefault();
+  }
+
+  function dragenter(event) {
+    event.target.classList.add('hovered');
+  }
+
+  function dragleave(event) {
+    event.target.classList.remove('hovered');
+  }
+
+  function dragdrop(event) {
+    event.target.classList.remove('hovered');
+    const card = document.querySelector('.hold');
+    if (event.target.classList.contains('placeholder')) {
+      event.target.append(card);
+    } else {
+      event.target.closest('card-column').parentElement.append(card);
+    }
+  }
+}
+
 //add column
 function addColumns(event) {
   if (event.target.classList.contains('add-column')) {
@@ -38,53 +89,7 @@ function addColumns(event) {
         addCard(event);
       }
     });
-
-    //drag-n-drop card in column
-    const cards = document.querySelectorAll('.card-column');
-    const placeholders = document.querySelectorAll('.placeholder');
-
-    for (const card of cards) {
-      card.addEventListener('dragstart', dragstart);
-      card.addEventListener('dragend', dragend);
-    }
-
-    function dragstart(event) {
-      event.target.classList.add('hold');
-      setTimeout(() => event.target.classList.add('hide'), 0);
-    }
-
-    function dragend(event) {
-      event.target.className = 'card-column';
-    }
-
-    for (const placeholder of placeholders) {
-      placeholder.addEventListener('dragover', dragover);
-      placeholder.addEventListener('dragenter', dragenter);
-      placeholder.addEventListener('dragleave', dragleave);
-      placeholder.addEventListener('drop', dragdrop);
-    }
-
-    function dragover(event) {
-      event.preventDefault();
-    }
-
-    function dragenter(event) {
-      event.target.classList.add('hovered');
-    }
-
-    function dragleave(event) {
-      event.target.classList.remove('hovered');
-    }
-
-    function dragdrop(event) {
-      event.target.classList.remove('hovered');
-      const card = document.querySelector('.hold');
-      if (event.target.classList.contains('card-column')) {
-        event.target.parentElement.append(card);
-      } else {
-        event.target.append(card);
-      }
-    }
+    dragDrop();
   }
 }
 class CardColumn extends HTMLElement {
@@ -96,21 +101,41 @@ class CardColumn extends HTMLElement {
     cardList: [],
   };
 
+  get data() {
+    return this.#data;
+  }
+
   set cardId(value) {
     this.#data.cardId = value;
   }
 
   set cardTitle(value) {
     this.#data.cardTitle = value;
+    this.components.cardTitle.textContent = value;
+    this.components.cardColumn.classList.remove('hide');
   }
 
   set cardDescription(value) {
     this.#data.cardDescription = value;
+    if (!this.#data.cardDescription == '') {
+      this.components.iconDescriptionColumn.classList.remove('hide');
+    }
   }
 
   set cardList(array) {
     this.#data.cardList = array;
-    console.log('cardcolumn', this.#data);
+    if (this.#data.cardList.length > 0) {
+      this.components.blockList.classList.remove('hide');
+      this.components.cardListInfo.textContent = `${
+        this.#data.cardList.filter((el) => el.checking).length
+      }/${this.#data.cardList.length}`;
+    }
+  }
+
+  showContent() {
+    this.cardTitle = this.#data.cardTitle;
+    this.cardDescription = this.#data.cardDescription;
+    this.cardList = this.#data.cardList;
   }
 
   constructor() {
@@ -122,6 +147,13 @@ class CardColumn extends HTMLElement {
 
   async connectedCallback() {
     this.innerHTML = await this.#template;
+    this.components = {
+      cardColumn: this.querySelector('.card-column'),
+      cardTitle: this.querySelector('.card-title'),
+      iconDescriptionColumn: this.querySelector('.icon-description-column'),
+      blockList: this.querySelector('.block-list'),
+      cardListInfo: this.querySelector('.card-list-info'),
+    };
   }
 }
 customElements.define('card-column', CardColumn);
@@ -144,7 +176,15 @@ class CardDialog extends HTMLElement {
       cardList: [],
     };
     this.#initialState = { ...this.#data };
-    console.log('CardDialog', this.#initialState);
+    this.components.cardTitle.value = '';
+    this.components.addDescription.classList.remove('hide');
+    this.components.cardDescription.classList.add('hide');
+    this.components.iconDescriptionModal.classList.add('opacity');
+    this.components.textareaDescription.value = '';
+    this.components.addList.classList.remove('hide');
+    this.components.cardList.classList.add('hide');
+    this.components.iconListModal.classList.add('opacity');
+    this.components.listItems.forEach((el) => el.remove());
   }
 
   saveNewCard() {
@@ -290,6 +330,7 @@ function addCard(event) {
     boardBox.classList.add('blur');
     const newCardColumn = document.createElement('card-column');
     newCardColumn.id = 'new';
+    newCardColumn.setAttribute('draggable', true);
     event.target.previousElementSibling.append(newCardColumn);
   }
 }
@@ -310,8 +351,9 @@ function closeCardModal() {
 }
 
 function saveCardModal() {
-  console.log('saveCardModal');
+  // console.log('saveCardModal');
   hideCardModal();
+  dragDrop();
   const cardModal = document.querySelector('card-dialog');
   cardModal.saveNewCard();
 }
