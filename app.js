@@ -101,9 +101,9 @@ class CardColumn extends HTMLElement {
     cardList: [],
   };
 
-  get data() {
-    return this.#data;
-  }
+  // get data() {
+  //   return this.#data;
+  // }
 
   set cardId(value) {
     this.#data.cardId = value;
@@ -119,6 +119,8 @@ class CardColumn extends HTMLElement {
     this.#data.cardDescription = value;
     if (!this.#data.cardDescription == '') {
       this.components.iconDescriptionColumn.classList.remove('hide');
+    } else {
+      this.components.iconDescriptionColumn.classList.add('hide');
     }
   }
 
@@ -129,6 +131,8 @@ class CardColumn extends HTMLElement {
       this.components.cardListInfo.textContent = `${
         this.#data.cardList.filter((el) => el.checking).length
       }/${this.#data.cardList.length}`;
+    } else {
+      this.components.blockList.classList.add('hide');
     }
   }
 
@@ -153,7 +157,22 @@ class CardColumn extends HTMLElement {
       iconDescriptionColumn: this.querySelector('.icon-description-column'),
       blockList: this.querySelector('.block-list'),
       cardListInfo: this.querySelector('.card-list-info'),
+      iconOpen: this.querySelector('.icon-open'),
     };
+
+    this.components.iconOpen.addEventListener('click', (event) => {
+      event.preventDefault();
+      const cardDialog = document.querySelector('card-dialog');
+      cardDialog.setOldCard(
+        this.#data.cardId,
+        this.#data.cardTitle,
+        this.#data.cardDescription,
+        this.#data.cardList
+      );
+      const cardModal = document.querySelector('.card-modal');
+      cardModal.classList.remove('hide');
+      boardBox.classList.add('blur');
+    });
   }
 }
 customElements.define('card-column', CardColumn);
@@ -201,6 +220,42 @@ class CardDialog extends HTMLElement {
           checking: el.classList.contains('line-through'),
         };
       }
+    );
+  }
+
+  setOldCard(cardId, cardTitle, cardDescription, cardList) {
+    this.#data = {
+      cardId: cardId,
+      cardTitle: cardTitle,
+      cardDescription: cardDescription,
+      cardList: cardList,
+    };
+    this.#initialState = { ...this.#data };
+  }
+
+  saveOldCard() {
+    const card = document.getElementById(`${this.#data.cardId}`);
+    card.id = this.#data.cardId;
+    card.cardId = this.#data.cardId;
+    card.cardTitle = this.components.cardTitle.value;
+    card.cardDescription = this.components.textareaDescription.value;
+    card.cardList = [...this.querySelectorAll('.list-item-description')].map(
+      (el, i) => {
+        return {
+          order: i,
+          description: el.value,
+          checking: el.classList.contains('line-through'),
+        };
+      }
+    );
+  }
+
+  comparisonData() {
+    console.log(this.#data);
+    console.log(this.#initialState);
+    return (
+      this.#data.cardTitle == this.#initialState.cardTitle &&
+      this.#data.cardDescription == this.#initialState.cardDescription
     );
   }
 
@@ -336,7 +391,8 @@ function addCard(event) {
 }
 
 function closeCardModal() {
-  console.log('closeCardModal');
+  const cardModal = document.querySelector('card-dialog');
+  console.log(cardModal.comparisonData());
   document.querySelector('.clarification-block').classList.remove('hide');
   document.querySelector('.card-modal').classList.add('blur');
 
@@ -345,17 +401,19 @@ function closeCardModal() {
     .addEventListener('click', saveCardModal);
 
   document.querySelector('.button-no').addEventListener('click', () => {
-    console.log('withoutSaveCardModal');
     hideCardModal();
   });
 }
 
 function saveCardModal() {
-  // console.log('saveCardModal');
   hideCardModal();
   dragDrop();
   const cardModal = document.querySelector('card-dialog');
-  cardModal.saveNewCard();
+  if (document.querySelector('#new')) {
+    cardModal.saveNewCard();
+  } else {
+    cardModal.saveOldCard();
+  }
 }
 
 function hideCardModal() {
