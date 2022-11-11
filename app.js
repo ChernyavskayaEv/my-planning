@@ -1,7 +1,6 @@
 const boardBox = document.querySelector('.board-box');
 const column = document.querySelector('.column');
 
-//working with column
 column.addEventListener('click', (event) => {
   event.preventDefault();
   if (event.target.classList.contains('add-column')) {
@@ -12,7 +11,6 @@ column.addEventListener('click', (event) => {
   }
 });
 
-//drag-n-drop card in column
 function dragDrop() {
   const cards = document.querySelectorAll('card-column');
   const placeholders = document.querySelectorAll('.placeholder');
@@ -63,7 +61,6 @@ function dragDrop() {
   }
 }
 
-//add column
 function addColumns(event) {
   if (event.target.classList.contains('add-column')) {
     const newColumn = document.createElement('div');
@@ -100,10 +97,6 @@ class CardColumn extends HTMLElement {
     cardDescription: '',
     cardList: [],
   };
-
-  // get data() {
-  //   return this.#data;
-  // }
 
   set cardId(value) {
     this.#data.cardId = value;
@@ -187,14 +180,11 @@ class CardDialog extends HTMLElement {
     cardList: [],
   };
 
-  setNewCard() {
-    this.#data = {
-      cardId: Date.now(),
-      cardTitle: '',
-      cardDescription: '',
-      cardList: [],
-    };
-    this.#initialState = { ...this.#data };
+  get data() {
+    return this.#data;
+  }
+
+  resetValues() {
     this.components.cardTitle.value = '';
     this.components.addDescription.classList.remove('hide');
     this.components.cardDescription.classList.add('hide');
@@ -204,6 +194,32 @@ class CardDialog extends HTMLElement {
     this.components.cardList.classList.add('hide');
     this.components.iconListModal.classList.add('opacity');
     this.components.listItems.forEach((el) => el.remove());
+    this.components.fullScale.style.width = '';
+    this.components.percents.innerHTML = '0%';
+  }
+
+  scale() {
+    this.components.listChecked = this.querySelectorAll('.line-through');
+    this.components.listItems = this.querySelectorAll('.list-item');
+
+    this.components.fullScale.style.width = `${
+      (this.components.listChecked.length / this.components.listItems.length) *
+      100
+    }%`;
+    this.components.percents.innerHTML = `${Math.floor(
+      (this.components.listChecked.length / this.components.listItems.length) *
+        100
+    )}%`;
+  }
+
+  setNewCard() {
+    this.#data = {
+      cardId: Date.now(),
+      cardTitle: '',
+      cardDescription: '',
+      cardList: [],
+    };
+    this.#initialState = { ...this.#data };
   }
 
   saveNewCard() {
@@ -221,9 +237,11 @@ class CardDialog extends HTMLElement {
         };
       }
     );
+    this.resetValues();
   }
 
   setOldCard(cardId, cardTitle, cardDescription, cardList) {
+    this.resetValues();
     this.#data = {
       cardId: cardId,
       cardTitle: cardTitle,
@@ -231,6 +249,39 @@ class CardDialog extends HTMLElement {
       cardList: cardList,
     };
     this.#initialState = { ...this.#data };
+    this.components.cardTitle.value = cardTitle;
+
+    if (cardDescription) {
+      this.components.addDescription.classList.add('hide');
+      this.components.cardDescription.classList.remove('hide');
+      this.components.iconDescriptionModal.classList.remove('opacity');
+      this.components.textareaDescription.value = cardDescription;
+    }
+
+    if (cardList.length > 0) {
+      cardList.map((el, i) => {
+        this.createListItem();
+        const listItem = this.querySelectorAll('.list-item-description')[i];
+        const checkboxInput = this.querySelectorAll('.checkbox-input')[i];
+        listItem.value = el.description;
+        checkboxInput.disabled = false;
+        this.scale();
+
+        this.components.addList.classList.add('hide');
+        this.components.cardList.classList.remove('hide');
+        this.components.iconListModal.classList.remove('opacity');
+
+        if (el.checking) {
+          listItem.classList.add('line-through');
+          checkboxInput.checked = true;
+          this.scale();
+        } else {
+          listItem.classList.remove('line-through');
+          checkboxInput.checked = false;
+          this.scale();
+        }
+      });
+    }
   }
 
   saveOldCard() {
@@ -248,15 +299,82 @@ class CardDialog extends HTMLElement {
         };
       }
     );
+    this.resetValues();
   }
 
   comparisonData() {
-    console.log(this.#data);
-    console.log(this.#initialState);
+    const comparisonCardList = () => {
+      if (this.#data.cardList.length == this.#initialState.cardList.length) {
+        for (let i = 0; i < this.#data.cardList.length; i++) {
+          if (
+            this.#data.cardList[i].description ==
+              this.#initialState.cardList[i].description &&
+            this.#data.cardList[i].checking ==
+              this.#initialState.cardList[i].checking
+          ) {
+            continue;
+          } else {
+            return false;
+          }
+        }
+      } else {
+        return false;
+      }
+      return true;
+    };
     return (
       this.#data.cardTitle == this.#initialState.cardTitle &&
-      this.#data.cardDescription == this.#initialState.cardDescription
+      this.#data.cardDescription == this.#initialState.cardDescription &&
+      comparisonCardList()
     );
+  }
+
+  createListItem() {
+    const newListItem = document.createElement('div');
+    newListItem.classList.add('list-item');
+    (this.components.listItems = this.querySelectorAll('.list-item')),
+      (newListItem.innerHTML = `<div class="checkbox-item">
+      <input id="list-item${
+        this.components.listItems.length + 1
+      }" class="checkbox-input" type="checkbox" name="item" disabled = true/>
+      <label class="checkbox-label" for="list-item${
+        this.components.listItems.length + 1
+      }"></label>
+    </div>
+    <textarea
+      class="list-item-description"
+      type="text"
+      placeholder="Добавьте описание"
+      name="item-description${this.components.listItems.length + 1}"
+    ></textarea>
+    <i class="fa-solid fa-xmark list-item-remove"></i>`);
+    this.components.addListItem.before(newListItem);
+
+    newListItem.addEventListener('click', (event) => {
+      if (event.target.classList.contains('list-item-description')) {
+        event.target.onchange = () =>
+          (newListItem.querySelector('.checkbox-input').disabled = false);
+        this.scale();
+      }
+      if (event.target.classList.contains('checkbox-input')) {
+        const { checked } = event.target;
+        if (checked) {
+          newListItem
+            .querySelector('.list-item-description')
+            .classList.add('line-through');
+          this.scale();
+        } else {
+          newListItem
+            .querySelector('.list-item-description')
+            .classList.remove('line-through');
+          this.scale();
+        }
+      }
+      if (event.target.classList.contains('list-item-remove')) {
+        event.target.parentElement.remove();
+        this.scale();
+      }
+    });
   }
 
   constructor() {
@@ -305,67 +423,7 @@ class CardDialog extends HTMLElement {
 
       this.components.progressBar.classList.remove('hide');
 
-      const newListItem = document.createElement('div');
-      newListItem.classList.add('list-item');
-      (this.components.listItems = this.querySelectorAll('.list-item')),
-        (newListItem.innerHTML = `<div class="checkbox-item">
-			  <input id="list-item${
-          this.components.listItems.length + 1
-        }" class="checkbox-input" type="checkbox" name="item" disabled = true/>
-			  <label class="checkbox-label" for="list-item${
-          this.components.listItems.length + 1
-        }"></label>
-			</div>
-			<textarea
-			  class="list-item-description"
-			  type="text"
-			  placeholder="Добавьте описание"
-			  name="item-description${this.components.listItems.length + 1}"
-			></textarea>
-      <i class="fa-solid fa-xmark list-item-remove"></i>`);
-      this.components.addListItem.before(newListItem);
-
-      newListItem.addEventListener('click', (event) => {
-        const scale = () => {
-          this.components.listChecked = this.querySelectorAll('.line-through');
-          this.components.listItems = this.querySelectorAll('.list-item');
-
-          this.components.fullScale.style.width = `${
-            (this.components.listChecked.length /
-              this.components.listItems.length) *
-            100
-          }%`;
-          this.components.percents.innerHTML = `${Math.floor(
-            (this.components.listChecked.length /
-              this.components.listItems.length) *
-              100
-          )}%`;
-        };
-
-        if (event.target.classList.contains('list-item-description')) {
-          event.target.onchange = () =>
-            (newListItem.querySelector('.checkbox-input').disabled = false);
-          scale();
-        }
-        if (event.target.classList.contains('checkbox-input')) {
-          const { checked } = event.target;
-          if (checked) {
-            newListItem
-              .querySelector('.list-item-description')
-              .classList.add('line-through');
-            scale();
-          } else {
-            newListItem
-              .querySelector('.list-item-description')
-              .classList.remove('line-through');
-            scale();
-          }
-        }
-        if (event.target.classList.contains('list-item-remove')) {
-          event.target.parentElement.remove();
-          scale();
-        }
-      });
+      this.createListItem();
     });
 
     this.components.closeIcon.addEventListener('click', closeCardModal);
@@ -375,7 +433,6 @@ class CardDialog extends HTMLElement {
 }
 customElements.define('card-dialog', CardDialog);
 
-//add card
 function addCard(event) {
   if (event.target.classList.contains('add-card')) {
     const cardDialog = document.querySelector('card-dialog');
@@ -392,9 +449,29 @@ function addCard(event) {
 
 function closeCardModal() {
   const cardModal = document.querySelector('card-dialog');
-  console.log(cardModal.comparisonData());
-  document.querySelector('.clarification-block').classList.remove('hide');
-  document.querySelector('.card-modal').classList.add('blur');
+  cardModal.data.cardTitle = cardModal.querySelector('.card-title').value;
+  cardModal.data.cardDescription = cardModal.querySelector(
+    '.textarea-description'
+  ).value;
+  cardModal.data.cardList = [
+    ...cardModal.querySelectorAll('.list-item-description'),
+  ].map((el, i) => {
+    return {
+      order: i,
+      description: el.value,
+      checking: el.classList.contains('line-through'),
+    };
+  });
+  if (!cardModal.comparisonData()) {
+    document.querySelector('.clarification-block').classList.remove('hide');
+    document.querySelector('.card-modal').classList.add('blur');
+  } else {
+    hideCardModal();
+    const card = document.getElementById('new');
+    card.remove();
+    const cardModal = document.querySelector('card-dialog');
+    cardModal.resetValues();
+  }
 
   document
     .querySelector('.button-yes')
@@ -402,6 +479,10 @@ function closeCardModal() {
 
   document.querySelector('.button-no').addEventListener('click', () => {
     hideCardModal();
+    const card = document.getElementById('new');
+    card.remove();
+    const cardModal = document.querySelector('card-dialog');
+    cardModal.resetValues();
   });
 }
 
