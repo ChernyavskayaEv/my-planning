@@ -122,19 +122,24 @@ body {
   border-radius: 0.2rem;
   font-size: 1.3rem;
   font-weight: bold;
-  letter-spacing: 0.1rem;
-  text-shadow: 0.2rem 0.2rem 0.2rem #958e8e;
+  text-shadow: 0.1rem 0.1rem 0.2rem #958e8e;
   color: inherit;
   background-color: inherit;
   cursor: pointer;
 }
 
 .add-column::before {
-  content: '+';
-  font-size: 1.5rem;
   text-shadow: 0.2rem 0.2rem 0.6rem #958e8e;
   color: #757575;
   margin-left: 1rem;
+  cursor: pointer;
+}
+
+.column-remove::before {
+  text-shadow: 0.2rem 0.2rem 0.6rem #958e8e;
+  color: #757575;
+  margin-left: 1rem;
+  cursor: pointer;
 }
 
 .placeholder {
@@ -152,22 +157,6 @@ body {
   width: 100%;
 }
 
-/* .card-column {
-  border-radius: 0.5rem;
-  background: #e5eff1;
-  padding: 1rem;
-  margin-bottom: 1rem;
-  cursor: grab;
-}
-
-.card-column:last-child {
-  margin-bottom: 0;
-}
-
-.card-column:active {
-  cursor: grabbing;
-} */
-
 .add-card,
 .add-list-item {
   color: #757575;
@@ -180,11 +169,47 @@ body {
   color: #757575;
 }
 
-/* .hold {
-  font-weight: bolder;
-  background: linear-gradient(90deg, #b2d0d9 0%, #83c2d2 100%);
-  box-shadow: 0.5rem 0.5rem 1rem rgba(0 0 0 / 20%);
-} */
+.question-block {
+  position: fixed;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  background-color: #cfe0e5;
+  border-radius: 0.5rem;
+  width: 30vw;
+  top: 12vw;
+  left: 35vw;
+  box-shadow: 1rem 1rem 1rem 1rem rgb(0 0 0 / 20%);
+  padding: 2rem;
+  z-index: 20;
+}
+
+.question-block .block-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin-top: 1rem;
+  justify-content: space-between;
+}
+
+.question-block button {
+  margin: 1rem auto;
+  padding: 1rem 1.5rem;
+  background-color: #e5eff1;
+  color: inherit;
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.2rem;
+  font-weight: 700;
+  text-shadow: 0.5rem 0.5rem 1rem #958e8e;
+  cursor: pointer;
+  border-radius: 0.5rem;
+  box-shadow: 0.5rem 0.5rem 1rem #958e8e;
+  width: 45%;
+  padding: 1rem 0;
+  margin: 0;
+}
 
 .hovered {
   border-radius: 0.5rem;

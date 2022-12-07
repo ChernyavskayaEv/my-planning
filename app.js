@@ -6,6 +6,22 @@ column.addEventListener('click', (event) => {
   if (event.target.classList.contains('add-column')) {
     addColumns(event);
   }
+  if (event.target.classList.contains('column-remove')) {
+    if (event.target.parentElement.nextElementSibling.children.length > 0) {
+      document.querySelector('.question-block').classList.remove('hide');
+
+      document.querySelector('.yes').addEventListener('click', () => {
+        event.target.parentElement.parentElement.remove();
+        document.querySelector('.question-block').classList.add('hide');
+      });
+
+      document.querySelector('.no').addEventListener('click', () => {
+        document.querySelector('.question-block').classList.add('hide');
+      });
+    } else {
+      event.target.parentElement.parentElement.remove();
+    }
+  }
   if (event.target.classList.contains('add-card')) {
     addCard(event);
   }
@@ -72,7 +88,8 @@ function addColumns(event) {
         placeholder="Введите название"
         name="title_column"
       />
-      <a href="#" class="add-column"></a>
+      <i class="fa-solid fa-plus add-column"></i>
+      <i class="fa-solid fa-xmark column-remove"></i>
     </div>
     <div class="placeholder"></div>
     <a href="#" class="add-card">Добавить карточку</a>`;
@@ -81,6 +98,22 @@ function addColumns(event) {
       event.preventDefault();
       if (event.target.classList.contains('add-column')) {
         addColumns(event);
+      }
+      if (event.target.classList.contains('column-remove')) {
+        if (event.target.parentElement.nextElementSibling.children.length > 0) {
+          document.querySelector('.question-block').classList.remove('hide');
+
+          document.querySelector('.yes').addEventListener('click', () => {
+            event.target.parentElement.parentElement.remove();
+            document.querySelector('.question-block').classList.add('hide');
+          });
+
+          document.querySelector('.no').addEventListener('click', () => {
+            document.querySelector('.question-block').classList.add('hide');
+          });
+        } else {
+          event.target.parentElement.parentElement.remove();
+        }
       }
       if (event.target.classList.contains('add-card')) {
         addCard(event);
@@ -96,6 +129,7 @@ class CardColumn extends HTMLElement {
     cardTitle: '',
     cardDescription: '',
     cardList: [],
+    listTitle: '',
   };
 
   set cardId(value) {
@@ -129,10 +163,15 @@ class CardColumn extends HTMLElement {
     }
   }
 
+  set listTitle(value) {
+    this.#data.listTitle = value;
+  }
+
   showContent() {
     this.cardTitle = this.#data.cardTitle;
     this.cardDescription = this.#data.cardDescription;
     this.cardList = this.#data.cardList;
+    this.listTitle = this.#data.listTitle;
   }
 
   constructor() {
@@ -160,7 +199,8 @@ class CardColumn extends HTMLElement {
         this.#data.cardId,
         this.#data.cardTitle,
         this.#data.cardDescription,
-        this.#data.cardList
+        this.#data.cardList,
+        this.#data.listTitle
       );
       const cardModal = document.querySelector('.card-modal');
       cardModal.classList.remove('hide');
@@ -177,6 +217,7 @@ class CardDialog extends HTMLElement {
     cardId: '',
     cardTitle: '',
     cardDescription: '',
+    listTitle: '',
     cardList: [],
   };
 
@@ -190,6 +231,7 @@ class CardDialog extends HTMLElement {
     this.components.cardDescription.classList.add('hide');
     this.components.iconDescriptionModal.classList.add('opacity');
     this.components.textareaDescription.value = '';
+    this.components.listTitle.value = '';
     this.components.addList.classList.remove('hide');
     this.components.cardList.classList.add('hide');
     this.components.iconListModal.classList.add('opacity');
@@ -201,15 +243,21 @@ class CardDialog extends HTMLElement {
   scale() {
     this.components.listChecked = this.querySelectorAll('.line-through');
     this.components.listItems = this.querySelectorAll('.list-item');
-
-    this.components.fullScale.style.width = `${
-      (this.components.listChecked.length / this.components.listItems.length) *
-      100
-    }%`;
-    this.components.percents.innerHTML = `${Math.floor(
-      (this.components.listChecked.length / this.components.listItems.length) *
+    if (!this.components.listItems.length) {
+      console.log(this.components.listItems.length);
+      this.components.percents.innerHTML = '0%';
+    } else {
+      this.components.fullScale.style.width = `${
+        (this.components.listChecked.length /
+          this.components.listItems.length) *
         100
-    )}%`;
+      }%`;
+      this.components.percents.innerHTML = `${Math.floor(
+        (this.components.listChecked.length /
+          this.components.listItems.length) *
+          100
+      )}%`;
+    }
   }
 
   setNewCard() {
@@ -217,6 +265,7 @@ class CardDialog extends HTMLElement {
       cardId: Date.now(),
       cardTitle: '',
       cardDescription: '',
+      listTitle: '',
       cardList: [],
     };
     this.#initialState = { ...this.#data };
@@ -228,6 +277,7 @@ class CardDialog extends HTMLElement {
     card.cardId = this.#data.cardId;
     card.cardTitle = this.components.cardTitle.value;
     card.cardDescription = this.components.textareaDescription.value;
+    card.listTitle = this.components.listTitle.value;
     card.cardList = [...this.querySelectorAll('.list-item-description')].map(
       (el, i) => {
         return {
@@ -240,12 +290,13 @@ class CardDialog extends HTMLElement {
     this.resetValues();
   }
 
-  setOldCard(cardId, cardTitle, cardDescription, cardList) {
+  setOldCard(cardId, cardTitle, cardDescription, cardList, listTitle) {
     this.resetValues();
     this.#data = {
       cardId: cardId,
       cardTitle: cardTitle,
       cardDescription: cardDescription,
+      listTitle: listTitle,
       cardList: cardList,
     };
     this.#initialState = { ...this.#data };
@@ -259,6 +310,7 @@ class CardDialog extends HTMLElement {
     }
 
     if (cardList.length > 0) {
+      this.components.listTitle.value = listTitle;
       cardList.map((el, i) => {
         this.createListItem();
         const listItem = this.querySelectorAll('.list-item-description')[i];
@@ -290,6 +342,7 @@ class CardDialog extends HTMLElement {
     card.cardId = this.#data.cardId;
     card.cardTitle = this.components.cardTitle.value;
     card.cardDescription = this.components.textareaDescription.value;
+    card.listTitle = this.components.listTitle.value;
     card.cardList = [...this.querySelectorAll('.list-item-description')].map(
       (el, i) => {
         return {
@@ -325,6 +378,7 @@ class CardDialog extends HTMLElement {
     return (
       this.#data.cardTitle == this.#initialState.cardTitle &&
       this.#data.cardDescription == this.#initialState.cardDescription &&
+      this.#data.listTitle == this.#initialState.listTitle &&
       comparisonCardList()
     );
   }
@@ -397,6 +451,7 @@ class CardDialog extends HTMLElement {
       iconListModal: this.querySelector('.icon-list-modal'),
       addList: this.querySelector('.add-list'),
       cardList: this.querySelector('.card-list'),
+      listTitle: this.querySelector('.list-title'),
       progressBar: this.querySelector('.progress-bar'),
       fullScale: this.querySelector('.full-scale'),
       percents: this.querySelector('.percents'),
@@ -468,7 +523,9 @@ function closeCardModal() {
   } else {
     hideCardModal();
     const card = document.getElementById('new');
-    card.remove();
+    if (card) {
+      card.remove();
+    }
     const cardModal = document.querySelector('card-dialog');
     cardModal.resetValues();
   }
@@ -480,7 +537,9 @@ function closeCardModal() {
   document.querySelector('.button-no').addEventListener('click', () => {
     hideCardModal();
     const card = document.getElementById('new');
-    card.remove();
+    if (card) {
+      card.remove();
+    }
     const cardModal = document.querySelector('card-dialog');
     cardModal.resetValues();
   });

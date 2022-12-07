@@ -24,13 +24,20 @@
             placeholder="Введите название"
             name="title_column"
           />
-          <a href="#" class="add-column"></a>
+          <i class="fa-solid fa-plus add-column"></i>
+          <i class="fa-solid fa-xmark column-remove"></i>
         </div>
         <div class="placeholder"></div>
         <a href="#" class="add-card">Добавить карточку</a>
       </div>
     </div>
-
+    <div class="question-block hide">
+      Колонка содержит карточки. Удалить вместе с карточками?
+      <div class="block-button">
+        <button class="yes" type="button">Да</button>
+        <button class="no" type="button">Отмена</button>
+      </div>
+    </div>
     <script src="app.js"></script>
   </body>
 </html>
