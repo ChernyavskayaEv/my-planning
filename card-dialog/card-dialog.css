@@ -249,6 +249,11 @@
   margin: 0;
 }
 
+.card-modal .save-button:hover,
+.clarification-block button:hover {
+  background-color: #d8ebee;
+}
+
 card-dialog .hide {
   display: none;
 }

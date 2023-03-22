@@ -6,38 +6,93 @@
     <link rel="stylesheet" href="styles.css" />
     <link rel="stylesheet" href="card-dialog/card-dialog.css" />
     <link rel="stylesheet" href="card-column/card-column.css" />
-
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+    />
     <script
       src="https://kit.fontawesome.com/2adfb96d3c.js"
       crossorigin="anonymous"
     ></script>
-    <title>My learning plan</title>
+    <title>My planning</title>
   </head>
   <body>
-    <div class="board-box">
-      <card-dialog></card-dialog>
-      <div class="column">
-        <div class="title-column">
-          <input
-            class="column-title"
-            type="text"
-            placeholder="Введите название"
-            name="title_column"
-          />
-          <i class="fa-solid fa-plus add-column"></i>
-          <i class="fa-solid fa-xmark column-remove"></i>
+    <div class="container">
+      <div class="board-collection">
+        <div
+          id="1"
+          class="board active"
+          style="
+            background-image: url('https://images.unsplash.com/photo-1669490893279-4589b3b1cf4e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80');
+          "
+        >
+          <div class="fa-regular fa-pen-to-square board-edit pointer"></div>
+          <p>План обучения</p>
         </div>
-        <div class="placeholder"></div>
-        <a href="#" class="add-card">Добавить карточку</a>
+        <div
+          id="2"
+          class="board"
+          style="
+            background-image: url('https://images.unsplash.com/photo-1539584222411-a76a40e9e861?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80');
+          "
+        >
+          <div class="fa-regular fa-pen-to-square board-edit opacity"></div>
+          <p class="pointer">План путешествий</p>
+        </div>
+        <i class="fa-solid fa-plus add-board"></i>
+      </div>
+      <div class="board-box 1 animate__animated">
+        <div class="column">
+          <div class="title-column">
+            <input
+              class="column-title"
+              type="text"
+              placeholder="Введите название"
+              name="title_column"
+            />
+            <i class="fa-solid fa-plus add-column"></i>
+            <i class="fa-solid fa-xmark column-remove"></i>
+          </div>
+          <div class="placeholder"></div>
+          <a href="#" class="add-card">Добавить карточку</a>
+        </div>
+      </div>
+      <div class="board-box 2 hide animate__animated">
+        <div class="column">
+          <div class="title-column">
+            <input
+              class="column-title"
+              type="text"
+              placeholder="Введите название"
+              name="title_column"
+            />
+            <i class="fa-solid fa-plus add-column"></i>
+            <i class="fa-solid fa-xmark column-remove"></i>
+          </div>
+          <div class="placeholder"></div>
+          <a href="#" class="add-card">Добавить карточку</a>
+        </div>
+      </div>
+      <board-dialog></board-dialog>
+      <card-dialog></card-dialog>
+      <div class="question-block hide">
+        <p class="question-column hide">
+          Колонка содержит карточки. Удалить вместе с карточками?
+        </p>
+        <p class="question-card hide">Вы уверены?</p>
+        <div class="block-button">
+          <button class="yes" type="button">Да</button>
+          <button class="no" type="button">Отмена</button>
+        </div>
+      </div>
+      <div class="prohibition-block hide">
+        <p>Последнюю колонку удалять нельзя!</p>
+        <i class="fa-solid fa-xmark hide-block"></i>
       </div>
     </div>
-    <div class="question-block hide">
-      Колонка содержит карточки. Удалить вместе с карточками?
-      <div class="block-button">
-        <button class="yes" type="button">Да</button>
-        <button class="no" type="button">Отмена</button>
-      </div>
-    </div>
+    <script src="board-dialog/board-dialog.js"></script>
+    <script src="card-column/card-column.js"></script>
+    <script src="card-dialog/card-dialog.js"></script>
     <script src="app.js"></script>
   </body>
 </html>

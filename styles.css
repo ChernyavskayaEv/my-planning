@@ -86,6 +86,73 @@ body {
   font-family: 'Roboto', sans-serif;
   font-size: 18px;
   color: #757575;
+  background-color: #edf4f5;
+}
+
+.container {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.board-collection {
+  width: 100vw;
+  height: 200px;
+  flex: 0 0 auto;
+  display: flex;
+  justify-content: start;
+  align-items: center;
+  background: #b3ccd5;
+  border-bottom: 1px solid;
+}
+
+.board {
+  background: #94b2bd;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center center;
+  height: 160px;
+  width: 200px;
+  margin-left: 25px;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  opacity: 0.3;
+  box-shadow: 5px 5px 15px #534c4c;
+}
+
+.board-edit {
+  align-self: end;
+  margin-right: 15px;
+  color: #fff;
+  text-shadow: 0 0 5px #000;
+}
+
+.active {
+  opacity: 1;
+}
+
+.board > p {
+  height: 80%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.5rem;
+  font-weight: 900;
+  letter-spacing: 1px;
+  color: #fff;
+  text-shadow: 0 0 5px #000;
+  text-align: center;
+}
+
+.add-board {
+  margin: 25px;
+  font-size: 25px;
+  cursor: pointer;
 }
 
 .board-box {
@@ -169,7 +236,9 @@ body {
   color: #757575;
 }
 
-.question-block {
+.question-block,
+.prohibition-block,
+.board-dialog {
   position: fixed;
   display: flex;
   align-items: center;
@@ -181,19 +250,76 @@ body {
   left: 35vw;
   box-shadow: 1rem 1rem 1rem 1rem rgb(0 0 0 / 20%);
   padding: 2rem;
-  z-index: 20;
+  z-index: 10;
 }
 
-.question-block .block-button {
+.prohibition-block {
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.board-dialog i {
+  font-size: 1.2rem;
+  width: 5%;
+}
+
+.board-dialog .close-board-icon {
+  position: absolute;
+  width: 1rem;
+  top: 0.7rem;
+  right: 0.7rem;
+  cursor: pointer;
+}
+
+.board-title {
+  width: 100%;
+  height: 2.5rem;
+  margin: 0 0 1rem;
+  padding: 0.5rem;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: inherit;
+  color: inherit;
+  background-color: inherit;
+  cursor: pointer;
+}
+
+input:focus {
+  box-shadow: 0 0 0.5rem #958e8e;
+}
+
+.select-background {
+  width: 100%;
+  padding: 0.5rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.board-background {
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center center;
+  height: 160px;
+  width: 200px;
+  border-radius: 10px;
+  box-shadow: 5px 5px 15px #534c4c;
+}
+
+.question-block .block-button,
+.board-dialog .block-button {
   display: flex;
-  justify-content: center;
   align-items: center;
   width: 100%;
   margin-top: 1rem;
   justify-content: space-between;
 }
 
-.question-block button {
+.board-dialog .block-button {
+  justify-content: center;
+}
+
+.question-block button,
+.board-dialog .save-button {
   margin: 1rem auto;
   padding: 1rem 1.5rem;
   background-color: #e5eff1;
@@ -206,9 +332,47 @@ body {
   cursor: pointer;
   border-radius: 0.5rem;
   box-shadow: 0.5rem 0.5rem 1rem #958e8e;
-  width: 45%;
-  padding: 1rem 0;
+  min-width: 45%;
+  padding: 1rem;
   margin: 0;
+}
+
+.question-block button:hover,
+.board-dialog .save-button:hover {
+  background-color: #d8ebee;
+}
+
+.selection-img {
+  position: fixed;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  background-color: #cfe0e5;
+  border-radius: 0.5rem;
+  width: 80vw;
+  height: 80vh;
+  top: 5vw;
+  left: 10vw;
+  box-shadow: 1rem 1rem 1rem 1rem rgb(0 0 0 / 20%);
+  padding: 2rem;
+  overflow: scroll;
+  z-index: 20;
+}
+
+.selection-img > div {
+  height: 160px;
+  width: 200px;
+  margin: 15px;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center center;
+  border-radius: 10px;
+  box-shadow: 5px 5px 15px #534c4c;
+}
+
+.selection-img > div:hover {
+  box-shadow: 0 0 15px #000;
+  border: 3px solid #b3ccd5;
 }
 
 .hovered {
@@ -226,4 +390,8 @@ body {
 
 .blur > *:not(card-dialog) {
   filter: blur(4px);
+}
+
+.pointer {
+  cursor: pointer;
 }

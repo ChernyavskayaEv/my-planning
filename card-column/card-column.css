@@ -14,9 +14,18 @@ card-column .card-column {
   cursor: grab;
 }
 
+card-column .box-icon {
+  text-align: end;
+}
+
 card-column .icon-open {
   text-align: end;
   cursor: pointer;
+}
+
+card-column .card-remove {
+  cursor: pointer;
+  margin-left: 0.5rem;
 }
 
 card-column .card-footer {
