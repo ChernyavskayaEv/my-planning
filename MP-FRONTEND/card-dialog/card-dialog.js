@@ -7,6 +7,8 @@ class CardDialog extends HTMLElement {
     cardDescription: '',
     listTitle: '',
     cardList: [],
+    column: '',
+    board: '',
   };
 
   get data() {
@@ -54,6 +56,8 @@ class CardDialog extends HTMLElement {
       cardDescription: '',
       listTitle: '',
       cardList: [],
+      column: '',
+      board: '',
     };
     this.#initialState = { ...this.#data };
   }
@@ -62,18 +66,22 @@ class CardDialog extends HTMLElement {
     const card = document.querySelector('#new');
     card.id = this.#data.cardId;
     card.cardId = this.#data.cardId;
-    card.cardTitle = this.components.cardTitle.value;
-    card.cardDescription = this.components.textareaDescription.value;
-    card.listTitle = this.components.listTitle.value;
-    card.cardList = [...this.querySelectorAll('.list-item-description')].map(
-      (el, i) => {
-        return {
-          order: i,
-          description: el.value,
-          checking: el.classList.contains('line-through'),
-        };
-      }
-    );
+    card.cardTitle = this.#data.cardTitle = this.components.cardTitle.value;
+    card.cardDescription = this.#data.cardDescription =
+      this.components.textareaDescription.value;
+    card.listTitle = this.#data.listTitle = this.components.listTitle.value;
+    card.cardList = this.#data.cardList = [
+      ...this.querySelectorAll('.list-item-description'),
+    ].map((el, i) => {
+      return {
+        order: i,
+        description: el.value,
+        checking: el.classList.contains('line-through'),
+      };
+    });
+    this.#data.column = card.parentElement.parentElement.id;
+    this.#data.board = document.querySelector('.board.active').id;
+    console.log('card', this.#data);
     this.resetValues();
   }
 
@@ -85,6 +93,8 @@ class CardDialog extends HTMLElement {
       cardDescription: cardDescription,
       listTitle: listTitle,
       cardList: cardList,
+      column: '',
+      board: '',
     };
     this.#initialState = { ...this.#data };
     this.components.cardTitle.value = cardTitle;
@@ -127,18 +137,22 @@ class CardDialog extends HTMLElement {
     const card = document.getElementById(`${this.#data.cardId}`);
     card.id = this.#data.cardId;
     card.cardId = this.#data.cardId;
-    card.cardTitle = this.components.cardTitle.value;
-    card.cardDescription = this.components.textareaDescription.value;
-    card.listTitle = this.components.listTitle.value;
-    card.cardList = [...this.querySelectorAll('.list-item-description')].map(
-      (el, i) => {
-        return {
-          order: i,
-          description: el.value,
-          checking: el.classList.contains('line-through'),
-        };
-      }
-    );
+    card.cardTitle = this.#data.cardTitle = this.components.cardTitle.value;
+    card.cardDescription = this.#data.cardDescription =
+      this.components.textareaDescription.value;
+    card.listTitle = this.#data.listTitle = this.components.listTitle.value;
+    card.cardList = this.#data.cardList = [
+      ...this.querySelectorAll('.list-item-description'),
+    ].map((el, i) => {
+      return {
+        order: i,
+        description: el.value,
+        checking: el.classList.contains('line-through'),
+      };
+    });
+    this.#data.column = card.parentElement.parentElement.id;
+    this.#data.board = document.querySelector('.board.active').id;
+    console.log('card', this.#data);
     this.resetValues();
   }
 

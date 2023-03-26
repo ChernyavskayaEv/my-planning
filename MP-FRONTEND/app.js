@@ -161,6 +161,7 @@ function addColumn(event) {
   if (event.target.classList.contains('add-column')) {
     const newColumn = document.createElement('div');
     newColumn.classList.add('column');
+    newColumn.id = Date.now();
     newColumn.innerHTML = `<div class="title-column">
       <input
         class="column-title"

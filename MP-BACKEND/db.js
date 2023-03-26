@@ -1,25 +1,23 @@
-const cards = [
-  {
-    cardId: 1,
-    cardTitle: 'card1',
-    cardDescription: 'cardDescription1',
-    listTitle: 'checkList1',
-    cardList: [
-      {
-        order: 1,
-        description: 'el.value11',
-        checking: false,
-      },
-      {
-        order: 2,
-        description: 'el.value12',
-        checking: true,
-      },
-    ],
-  },
-];
+import dotenv from 'dotenv';
+import pkg from 'pg';
+const { Pool } = pkg;
+dotenv.config();
 
-export const getCards = async () => cards;
+const config = {
+  host: process.env['DB_HOST'],
+  port: process.env['DB_PORT'],
+  database: process.env['DB_NAME'],
+  user: process.env['DB_USER'],
+  password: process.env['DB_PASSWORD'],
+};
+
+const pool = new Pool(config);
+
+export const getCards = async () => {
+  const sql = `SELECT * FROM table_cards`;
+  const { rows } = await pool.query(sql);
+  return rows;
+};
 
 export const newCard = async ({
   cardId,
@@ -27,29 +25,41 @@ export const newCard = async ({
   cardDescription,
   listTitle,
   cardList,
+  columnDbId,
 }) => {
-  cards.push({ cardId, cardTitle, cardDescription, listTitle, cardList });
-  return true;
-};
-
-export const removeCard = async (neededId) => {
-  const indexCard = cards.findIndex((item) => item.cardId == neededId);
-  cards.splice(indexCard, 1);
-  return true;
-};
-
-export const updateCard = async (
-  neededId,
-  { cardId, cardTitle, cardDescription, listTitle, cardList }
-) => {
-  const indexCard = cards.findIndex((item) => item.cardId == neededId);
-  cards.splice(indexCard, 1, {
+  const params = [
     cardId,
     cardTitle,
     cardDescription,
     listTitle,
-    cardList,
-  });
+    JSON.stringify(cardList),
+    columnDbId,
+  ];
+  const sql = `INSERT INTO table_cards (cardId, cardTitle, cardDescription, listTitle, cardList, columnDbId )
+  VALUES ($1, $2, $3, $4, $5, $6);`;
+  await pool.query(sql, params);
+  return true;
+};
+
+export const removeCard = async (neededId) => {
+  const sql = `DELETE FROM table_cards tc 
+  WHERE cardId = ${neededId}`;
+  await pool.query(sql);
+  return true;
+};
+
+export const updateCard = async ({ neededId, ...fields }) => {
+  const params = [];
+  const sql = `UPDATE table_cards tc 
+  SET ${Object.entries(fields)
+    .map(([k, v]) =>
+      k == 'cardList'
+        ? `${k} = $${params.push(JSON.stringify(v))}`
+        : `${k} = $${params.push(v)}`
+    )
+    .join(',')}
+  WHERE cardid = ${neededId};`;
+  await pool.query(sql, params);
   return true;
 };
 

@@ -18,8 +18,9 @@ class BoardDialog extends HTMLElement {
 
   saveNewBoard() {
     const board = document.querySelector('#newBoard');
-    board.lastChild.textContent = this.components.boardTitle.value;
-    board.style.backgroundImage =
+    board.lastChild.textContent = this.#data.boardTitle =
+      this.components.boardTitle.value;
+    board.style.backgroundImage = this.#data.boardBackground =
       this.components.boardBackground.style.backgroundImage;
     board.id = this.#data.boardId;
 
@@ -44,8 +45,9 @@ class BoardDialog extends HTMLElement {
 
   saveOldBoard() {
     const board = document.getElementById(`${this.#data.boardId}`);
-    board.lastElementChild.textContent = this.components.boardTitle.value;
-    board.style.backgroundImage =
+    board.lastElementChild.textContent = this.#data.boardTitle =
+      this.components.boardTitle.value;
+    board.style.backgroundImage = this.#data.boardBackground =
       this.components.boardBackground.style.backgroundImage;
 
     this.resetValues();
@@ -109,6 +111,7 @@ class BoardDialog extends HTMLElement {
         } else {
           this.saveOldBoard();
         }
+        console.log('board', this.#data);
       }
     });
 

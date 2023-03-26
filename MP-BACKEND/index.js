@@ -1,8 +1,6 @@
 import express from 'express';
 import bodyParser from 'body-parser';
-import { validationResult } from 'express-validator';
 
-import db from './db.js';
 import {
   registerValidation,
   loginValidation,

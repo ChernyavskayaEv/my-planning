@@ -35,8 +35,14 @@ export const getOne = async (req, res) => {
 
 export const create = async (req, res) => {
   try {
-    const { cardId, cardTitle, cardDescription, listTitle, cardList } =
-      req.body;
+    const {
+      cardId,
+      cardTitle,
+      cardDescription,
+      listTitle,
+      cardList,
+      columnDbId,
+    } = req.body;
 
     const result = await db.newCard({
       cardId,
@@ -44,11 +50,12 @@ export const create = async (req, res) => {
       cardDescription,
       listTitle,
       cardList,
+      columnDbId,
     });
 
     res.json({ result });
-  } catch (error) {
-    console.log(error);
+  } catch (err) {
+    console.log(err);
     res.status(500).json({
       message: 'Не удалось создать карточку',
     });
@@ -58,27 +65,19 @@ export const create = async (req, res) => {
 export const update = async (req, res) => {
   try {
     const neededId = req.params.id;
-    const { cardId, cardTitle, cardDescription, listTitle, cardList } =
-      req.body;
 
-    const card = (await db.getCards()).find((item) => item.cardId == neededId);
+    const card = (await db.getCards()).find((item) => item.cardid == neededId);
 
     if (!card) {
       return res.status(404).json({
         message: 'Карточка не найдена',
       });
     } else {
-      const result = await db.updateCard(neededId, {
-        cardId,
-        cardTitle,
-        cardDescription,
-        listTitle,
-        cardList,
-      });
+      const result = await db.updateCard({ neededId, ...req.body });
       res.json({ result });
     }
-  } catch (error) {
-    console.log(error);
+  } catch (err) {
+    console.log(err);
     res.status(500).json({
       message: 'Не удалось обновить карточку',
     });
@@ -89,7 +88,7 @@ export const remove = async (req, res) => {
   try {
     const neededId = req.params.id;
 
-    const card = (await db.getCards()).find((item) => item.cardId == neededId);
+    const card = (await db.getCards()).find((item) => item.cardid == neededId);
 
     if (!card) {
       return res.status(404).json({
