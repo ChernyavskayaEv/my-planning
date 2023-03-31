@@ -89,6 +89,14 @@ class BoardDialog extends HTMLElement {
       boardBackground: this.querySelector('.board-background'),
     };
 
+    // const cards = await fetch('/cards', {
+    //   method: 'GET',
+    //   headers: {
+    //     'Content-Type': 'application/json;charset=utf-8',
+    //   },
+    // }).then((res) => res.json());
+    // console.log(cards);
+
     this.components.boardDialog.addEventListener('click', (event) => {
       if (event.target.classList.contains('select-background')) {
         this.components.selectionImg.classList.remove('hide');

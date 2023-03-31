@@ -13,39 +13,108 @@ const config = {
 
 const pool = new Pool(config);
 
+export const getBoards = async () => {
+  const sql = `SELECT * FROM table_boards tb`;
+  const { rows } = await pool.query(sql);
+  return rows;
+};
+
+export const getOneBoard = async (neededId) => {
+  const sql = `SELECT * FROM table_boards tb
+  WHERE boardid = ${neededId};`;
+  const { rowCount, rows } = await pool.query(sql);
+  return { rowCount, rows };
+};
+
+export const newBoard = async ({ ...fields }) => {
+  const params = Object.entries(fields).map(([k, v]) => v);
+  const sql = `INSERT INTO table_boards tb ( boardId , boardTitle , boardBackground )
+  VALUES ($1, $2, $3)
+  RETURNING id;`;
+  const { rows } = await pool.query(sql, params);
+  return `br-${rows[0].id}`;
+};
+
+export const updateBoard = async ({ neededId, ...fields }) => {
+  const params = [];
+  const sql = `UPDATE table_boards tb 
+  SET ${Object.entries(fields)
+    .map(([k, v]) => `${k} = $${params.push(v)}`)
+    .join(',')}
+  WHERE boardid = ${neededId};`;
+  const { rowCount, command } = await pool.query(sql, params);
+  return { rowCount, command };
+};
+
+export const removeBoard = async (neededId) => {
+  const sql = `DELETE FROM table_boards tb 
+  WHERE boardid = ${neededId}`;
+  const { rowCount, command } = await pool.query(sql);
+  return { rowCount, command };
+};
+
+export const getColumns = async () => {
+  const sql = `SELECT * FROM table_columns`;
+  const { rows } = await pool.query(sql);
+  return rows;
+};
+
+export const getOneColumn = async (neededId) => {
+  const sql = `SELECT * FROM table_columns
+  WHERE columnid = ${neededId};`;
+  const { rowCount, rows } = await pool.query(sql);
+  return { rowCount, rows };
+};
+
+export const newColumn = async ({ ...fields }) => {
+  const params = Object.entries(fields).map(([k, v]) => v);
+  const sql = `INSERT INTO table_columns ( columnId , columnTitle , boardDbId )
+  VALUES ($1, $2, $3)
+  RETURNING id;`;
+  const { rows } = await pool.query(sql, params);
+  return `cl-${rows[0].id}`;
+};
+
+export const updateColumn = async ({ neededId, ...fields }) => {
+  const params = [];
+  const sql = `UPDATE table_columns 
+  SET ${Object.entries(fields)
+    .map(([k, v]) => `${k} = $${params.push(v)}`)
+    .join(',')}
+  WHERE columnid = ${neededId};`;
+  const { rowCount, command } = await pool.query(sql, params);
+  return { rowCount, command };
+};
+
+export const removeColumn = async (neededId) => {
+  const sql = `DELETE FROM table_columns 
+  WHERE columnid = ${neededId}`;
+  const { rowCount, command } = await pool.query(sql);
+  return { rowCount, command };
+};
+
 export const getCards = async () => {
   const sql = `SELECT * FROM table_cards`;
   const { rows } = await pool.query(sql);
   return rows;
 };
 
-export const newCard = async ({
-  cardId,
-  cardTitle,
-  cardDescription,
-  listTitle,
-  cardList,
-  columnDbId,
-}) => {
-  const params = [
-    cardId,
-    cardTitle,
-    cardDescription,
-    listTitle,
-    JSON.stringify(cardList),
-    columnDbId,
-  ];
-  const sql = `INSERT INTO table_cards (cardId, cardTitle, cardDescription, listTitle, cardList, columnDbId )
-  VALUES ($1, $2, $3, $4, $5, $6);`;
-  await pool.query(sql, params);
-  return true;
+export const getOneCard = async (neededId) => {
+  const sql = `SELECT * FROM table_cards
+  WHERE cardid = ${neededId};`;
+  const { rowCount, rows } = await pool.query(sql);
+  return { rowCount, rows };
 };
 
-export const removeCard = async (neededId) => {
-  const sql = `DELETE FROM table_cards tc 
-  WHERE cardId = ${neededId}`;
-  await pool.query(sql);
-  return true;
+export const newCard = async ({ ...fields }) => {
+  const params = Object.entries(fields).map(([k, v]) =>
+    k == 'cardList' ? JSON.stringify(v) : v
+  );
+  const sql = `INSERT INTO table_cards (cardId, cardTitle, cardDescription, listTitle, cardList, columnDbId )
+  VALUES ($1, $2, $3, $4, $5, $6)
+  RETURNING id;`;
+  const { rows } = await pool.query(sql, params);
+  return `cr-${rows[0].id}`;
 };
 
 export const updateCard = async ({ neededId, ...fields }) => {
@@ -59,8 +128,31 @@ export const updateCard = async ({ neededId, ...fields }) => {
     )
     .join(',')}
   WHERE cardid = ${neededId};`;
-  await pool.query(sql, params);
-  return true;
+  const { rowCount, command } = await pool.query(sql, params);
+  return { rowCount, command };
 };
 
-export default { getCards, newCard, removeCard, updateCard };
+export const removeCard = async (neededId) => {
+  const sql = `DELETE FROM table_cards tc 
+  WHERE cardId = ${neededId}`;
+  const { rowCount, command } = await pool.query(sql);
+  return { rowCount, command };
+};
+
+export default {
+  getBoards,
+  getOneBoard,
+  newBoard,
+  updateBoard,
+  removeBoard,
+  getColumns,
+  getOneColumn,
+  newColumn,
+  updateColumn,
+  removeColumn,
+  getCards,
+  getOneCard,
+  newCard,
+  updateCard,
+  removeCard,
+};

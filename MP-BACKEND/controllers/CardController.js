@@ -15,16 +15,13 @@ export const getAll = async (req, res) => {
 export const getOne = async (req, res) => {
   try {
     const neededId = req.params.id;
-
-    const card = (await db.getCards()).find((item) => item.cardId == neededId);
-
-    if (!card) {
+    const result = await db.getOneCard(neededId);
+    if (result.rowCount == 0) {
       return res.status(404).json({
         message: 'Карточка не найдена',
       });
     }
-
-    res.json(card);
+    res.json(result.rows);
   } catch (err) {
     console.log(err);
     res.status(500).json({
@@ -35,24 +32,7 @@ export const getOne = async (req, res) => {
 
 export const create = async (req, res) => {
   try {
-    const {
-      cardId,
-      cardTitle,
-      cardDescription,
-      listTitle,
-      cardList,
-      columnDbId,
-    } = req.body;
-
-    const result = await db.newCard({
-      cardId,
-      cardTitle,
-      cardDescription,
-      listTitle,
-      cardList,
-      columnDbId,
-    });
-
+    const result = await db.newCard({ ...req.body });
     res.json({ result });
   } catch (err) {
     console.log(err);
@@ -65,17 +45,13 @@ export const create = async (req, res) => {
 export const update = async (req, res) => {
   try {
     const neededId = req.params.id;
-
-    const card = (await db.getCards()).find((item) => item.cardid == neededId);
-
-    if (!card) {
+    const result = await db.updateCard({ neededId, ...req.body });
+    if (result.rowCount == 0) {
       return res.status(404).json({
         message: 'Карточка не найдена',
       });
-    } else {
-      const result = await db.updateCard({ neededId, ...req.body });
-      res.json({ result });
     }
+    res.json(result.command);
   } catch (err) {
     console.log(err);
     res.status(500).json({
@@ -87,17 +63,13 @@ export const update = async (req, res) => {
 export const remove = async (req, res) => {
   try {
     const neededId = req.params.id;
-
-    const card = (await db.getCards()).find((item) => item.cardid == neededId);
-
-    if (!card) {
+    const result = await db.removeCard(neededId);
+    if (result.rowCount == 0) {
       return res.status(404).json({
         message: 'Карточка не найдена',
       });
-    } else {
-      const result = await db.removeCard(neededId);
-      res.json({ result });
     }
+    res.json(result.command);
   } catch (err) {
     console.log(err);
     res.status(500).json({

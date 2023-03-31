@@ -7,8 +7,8 @@ class CardDialog extends HTMLElement {
     cardDescription: '',
     listTitle: '',
     cardList: [],
-    column: '',
-    board: '',
+    columnDbId: '',
+    // board: '',
   };
 
   get data() {
@@ -56,15 +56,15 @@ class CardDialog extends HTMLElement {
       cardDescription: '',
       listTitle: '',
       cardList: [],
-      column: '',
-      board: '',
+      columnDbId: '',
+      // board: '',
     };
     this.#initialState = { ...this.#data };
   }
 
-  saveNewCard() {
+  async saveNewCard() {
     const card = document.querySelector('#new');
-    card.id = this.#data.cardId;
+
     card.cardId = this.#data.cardId;
     card.cardTitle = this.#data.cardTitle = this.components.cardTitle.value;
     card.cardDescription = this.#data.cardDescription =
@@ -79,9 +79,20 @@ class CardDialog extends HTMLElement {
         checking: el.classList.contains('line-through'),
       };
     });
-    this.#data.column = card.parentElement.parentElement.id;
-    this.#data.board = document.querySelector('.board.active').id;
-    console.log('card', this.#data);
+    this.#data.columnDbId = card.parentElement.parentElement.id;
+    // this.#data.board = document.querySelector('.board.active').id;
+
+    // const { result: id } = await fetch('/cards', {
+    //   method: 'POST',
+    //   headers: {
+    //     'Content-Type': 'application/json;charset=utf-8',
+    //   },
+    //   body: JSON.stringify({ ...this.#data }),
+    // }).then((res) => res.json());
+    // card.id = id;
+
+    console.log([...card.parentElement.children]);
+
     this.resetValues();
   }
 
@@ -93,8 +104,8 @@ class CardDialog extends HTMLElement {
       cardDescription: cardDescription,
       listTitle: listTitle,
       cardList: cardList,
-      column: '',
-      board: '',
+      columnDbId: '',
+      // board: '',
     };
     this.#initialState = { ...this.#data };
     this.components.cardTitle.value = cardTitle;
@@ -150,8 +161,8 @@ class CardDialog extends HTMLElement {
         checking: el.classList.contains('line-through'),
       };
     });
-    this.#data.column = card.parentElement.parentElement.id;
-    this.#data.board = document.querySelector('.board.active').id;
+    this.#data.columnDbId = card.parentElement.parentElement.id;
+    // this.#data.board = document.querySelector('.board.active').id;
     console.log('card', this.#data);
     this.resetValues();
   }
