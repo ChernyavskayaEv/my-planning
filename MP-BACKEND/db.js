@@ -14,41 +14,53 @@ const config = {
 const pool = new Pool(config);
 
 export const getBoards = async () => {
-  const sql = `SELECT * FROM table_boards tb`;
+  const sql = `SELECT * FROM table_boards
+  ORDER BY orderliness;`;
   const { rows } = await pool.query(sql);
   return rows;
 };
 
 export const getOneBoard = async (neededId) => {
-  const sql = `SELECT * FROM table_boards tb
-  WHERE boardid = ${neededId};`;
-  const { rowCount, rows } = await pool.query(sql);
-  return { rowCount, rows };
+  const sql = `SELECT * FROM table_boards
+  WHERE id = ${neededId};`;
+  const { rows } = await pool.query(sql);
+  return rows.pop();
 };
 
 export const newBoard = async ({ ...fields }) => {
   const params = Object.entries(fields).map(([k, v]) => v);
-  const sql = `INSERT INTO table_boards tb ( boardId , boardTitle , boardBackground )
-  VALUES ($1, $2, $3)
+  const sql = `INSERT INTO table_boards ( orderliness , title , background , active )
+  VALUES ($1, $2, $3, $4)
   RETURNING id;`;
   const { rows } = await pool.query(sql, params);
   return `br-${rows[0].id}`;
 };
 
+export const updateActiveBoard = async (neededId) => {
+  const sql = `UPDATE  table_boards tb SET active = false WHERE active = true;
+  UPDATE  table_boards tb SET active = true 
+  WHERE id = ${neededId};`;
+  const { rowCount, command } = await pool.query(sql);
+  return { rowCount, command };
+};
+
 export const updateBoard = async ({ neededId, ...fields }) => {
   const params = [];
-  const sql = `UPDATE table_boards tb 
+  const sql = `UPDATE table_boards
   SET ${Object.entries(fields)
     .map(([k, v]) => `${k} = $${params.push(v)}`)
     .join(',')}
-  WHERE boardid = ${neededId};`;
+  WHERE id = ${neededId};`;
   const { rowCount, command } = await pool.query(sql, params);
   return { rowCount, command };
 };
 
 export const removeBoard = async (neededId) => {
-  const sql = `DELETE FROM table_boards tb 
-  WHERE boardid = ${neededId}`;
+  const sql = `
+  UPDATE table_boards SET orderliness = orderliness-1
+  WHERE orderliness > (SELECT orderliness from table_boards WHERE id = ${neededId});
+  DELETE FROM table_boards
+  WHERE id = ${neededId};`;
   const { rowCount, command } = await pool.query(sql);
   return { rowCount, command };
 };
@@ -142,6 +154,7 @@ export const removeCard = async (neededId) => {
 export default {
   getBoards,
   getOneBoard,
+  updateActiveBoard,
   newBoard,
   updateBoard,
   removeBoard,

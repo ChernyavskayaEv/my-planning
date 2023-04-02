@@ -42,6 +42,7 @@ app.patch(
   handleValidationErrors,
   BoardController.update
 );
+app.patch('/boards', BoardController.updateActive);
 
 app.get('/columns', ColumnController.getAll);
 app.get('/columns/:id', ColumnController.getOne);

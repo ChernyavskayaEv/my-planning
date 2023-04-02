@@ -70,53 +70,85 @@ function removeBlurBoardBox() {
   });
 }
 
+async function updateActiveBoard(idBoard) {
+  const id = idBoard.split('-')[1];
+  const boards = document.querySelectorAll('.board');
+  boards.forEach((board) => {
+    board.classList.remove('active');
+    [...board.children].forEach((children) => {
+      children.classList.remove('pointer');
+    });
+    board.children[0].classList.add('opacity');
+    board.children[1].classList.add('pointer');
+  });
+
+  // const boardBoxs = document.querySelectorAll('.board-box');
+  // boardBoxs.forEach((boardBox) => {
+  //   setTimeout(() => {
+  //     boardBox.classList.add('hide');
+  //   }, 300);
+  //   boardBox.classList.add('animate__bounceOutLeft');
+  //   boardBox.classList.remove('animate__bounceInRight');
+  //   if (boardBox.classList.contains(`${event.target.parentElement.id}`)) {
+  //     setTimeout(() => {
+  //       boardBox.classList.remove('hide');
+  //       boardBox.classList.add('animate__bounceInRight');
+  //     }, 300);
+
+  //     boardBox.classList.remove('animate__bounceOutLeft');
+  //   }
+  // });
+
+  await fetch('/boards', {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json;charset=utf-8' },
+    body: JSON.stringify({ id }),
+  });
+}
+
+async function removeActiveBoard(idBoard) {
+  const id = idBoard.split('-')[1];
+
+  await fetch(`/boards/${id}`, {
+    method: 'DELETE',
+    headers: { 'Content-Type': 'application/json;charset=utf-8' },
+  });
+}
+
 boardCollection.addEventListener('click', (event) => {
   if (
     event.target.parentElement.classList.contains('board') &&
     !event.target.parentElement.classList.contains('active') &&
     !event.target.classList.contains('board-edit')
   ) {
-    const boards = document.querySelectorAll('.board');
-    boards.forEach((board) => {
-      board.classList.remove('active');
-      [...board.children].forEach((children) => {
-        children.classList.remove('pointer');
-      });
-      board.children[0].classList.add('opacity');
-      board.children[1].classList.add('pointer');
-    });
-    const boardBoxs = document.querySelectorAll('.board-box');
-    boardBoxs.forEach((boardBox) => {
-      setTimeout(() => {
-        boardBox.classList.add('hide');
-      }, 300);
-      boardBox.classList.add('animate__bounceOutLeft');
-      boardBox.classList.remove('animate__bounceInRight');
-      if (boardBox.classList.contains(`${event.target.parentElement.id}`)) {
-        setTimeout(() => {
-          boardBox.classList.remove('hide');
-          boardBox.classList.add('animate__bounceInRight');
-        }, 300);
-
-        boardBox.classList.remove('animate__bounceOutLeft');
-      }
-    });
     const activeBoard = event.target.parentElement;
+    updateActiveBoard(activeBoard.id);
+
     activeBoard.classList.add('active');
     activeBoard.children[0].classList.remove('opacity');
     activeBoard.children[0].classList.add('pointer');
     activeBoard.children[1].classList.remove('pointer');
   }
   if (
-    event.target.parentElement.classList.contains('active') &&
+    event.target.parentElement.parentElement.classList.contains('active') &&
     event.target.classList.contains('board-edit')
   ) {
-    boardDialog.setOldBoard(
-      event.target.parentElement.id,
-      event.target.parentElement.style.backgroundImage,
-      event.target.nextElementSibling.textContent
-    );
+    boardDialog.setOldBoard(event.target.parentElement.parentElement.id);
     boardDialog.openBoardDialog();
+  }
+  if (
+    event.target.parentElement.parentElement.classList.contains('active') &&
+    event.target.classList.contains('board-remove')
+  ) {
+    event.target.parentElement.parentElement.remove();
+    removeActiveBoard(event.target.parentElement.parentElement.id);
+    updateActiveBoard(document.querySelectorAll('.board')[0].id);
+
+    const activeBoard = document.querySelectorAll('.board')[0];
+    activeBoard.classList.add('active');
+    activeBoard.children[0].classList.remove('opacity');
+    activeBoard.children[0].classList.add('pointer');
+    activeBoard.children[1].classList.remove('pointer');
   }
   if (event.target.classList.contains('add-board')) {
     boardDialog.setNewBoard();
@@ -125,7 +157,10 @@ boardCollection.addEventListener('click', (event) => {
     newBoardScreen.id = 'newBoard';
     newBoardScreen.classList.add('board');
     newBoardScreen.innerHTML = `
-      <div class="fa-regular fa-pen-to-square board-edit opacity"></div>
+    <div class="board-icon opacity">
+      <i class="fa-regular fa-pen-to-square board-edit"></i>
+      <i class="fa-solid fa-xmark board-remove"></i>
+    </div>
       <p class="pointer"></p>`;
     event.target.previousElementSibling.after(newBoardScreen);
     const newBoardBox = document.createElement('div');
@@ -264,15 +299,6 @@ function hideCardModal() {
   document.querySelector('.card-modal').classList.remove('blur');
   removeBlurBoardBox();
 }
-
-// document.addEventListener('keyup', (event) => {
-//   if (
-//     event.code === 'Escape' &&
-//     !document.querySelector('.card-modal').classList.contains('hide')
-//   ) {
-//     closeCardModal();
-//   }
-// });
 
 function removing(event) {
   document.querySelector('.yes').addEventListener('click', () => {

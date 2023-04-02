@@ -124,7 +124,14 @@ body {
   box-shadow: 5px 5px 15px #534c4c;
 }
 
-.board-edit {
+.board-icon {
+  display: flex;
+  justify-content: end;
+  margin-left: 70%;
+}
+
+.board-edit,
+.board-remove {
   align-self: end;
   margin-right: 15px;
   color: #fff;
@@ -150,9 +157,19 @@ body {
 }
 
 .add-board {
-  margin: 25px;
-  font-size: 25px;
+  width: 180px;
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 900;
+  letter-spacing: 1px;
+  color: #fff;
+  text-shadow: 0 0 5px #000;
   cursor: pointer;
+}
+
+.add-board::before {
+  content: '+';
+  display: block;
 }
 
 .board-box {
@@ -263,7 +280,8 @@ body {
   width: 5%;
 }
 
-.board-dialog .close-board-icon {
+.board-dialog .close-board-icon,
+.selection-img .close-board-icon {
   position: absolute;
   width: 1rem;
   top: 0.7rem;

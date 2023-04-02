@@ -19,29 +19,9 @@
   <body>
     <div class="container">
       <div class="board-collection">
-        <div
-          id="1679919013071"
-          class="board active"
-          style="
-            background-image: url('https://images.unsplash.com/photo-1669490893279-4589b3b1cf4e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80');
-          "
-        >
-          <div class="fa-regular fa-pen-to-square board-edit pointer"></div>
-          <p>План обучения</p>
-        </div>
-        <div
-          id="1679919058926"
-          class="board"
-          style="
-            background-image: url('https://images.unsplash.com/photo-1539584222411-a76a40e9e861?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80');
-          "
-        >
-          <div class="fa-regular fa-pen-to-square board-edit opacity"></div>
-          <p class="pointer">План путешествий</p>
-        </div>
-        <i class="fa-solid fa-plus add-board"></i>
+        <p class="add-board">Добавить доску</p>
       </div>
-      <div class="board-box 1679919013071 animate__animated">
+      <!-- <div class="board-box 1679919013071 animate__animated">
         <div id="4" class="column">
           <div class="title-column">
             <input
@@ -72,10 +52,13 @@
           <div class="placeholder"></div>
           <a href="#" class="add-card">Добавить карточку</a>
         </div>
-      </div>
+      </div> -->
       <board-dialog></board-dialog>
-      <card-dialog></card-dialog>
+      <!-- <card-dialog></card-dialog> -->
       <div class="question-block hide">
+        <p class="question-board hide">
+          Доска содержит карточки. Удалить вместе с карточками?
+        </p>
         <p class="question-column hide">
           Колонка содержит карточки. Удалить вместе с карточками?
         </p>
@@ -85,10 +68,10 @@
           <button class="no" type="button">Отмена</button>
         </div>
       </div>
-      <div class="prohibition-block hide">
+      <!-- <div class="prohibition-block hide">
         <p>Последнюю колонку удалять нельзя!</p>
         <i class="fa-solid fa-xmark hide-block"></i>
-      </div>
+      </div> -->
     </div>
     <script src="board-dialog/board-dialog.js"></script>
     <script src="card-column/card-column.js"></script>

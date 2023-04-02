@@ -17,9 +17,10 @@ export const registerValidation = [
 ];
 
 export const boardCreateValidation = [
-  body('boardId', 'Не должно быть пусто').notEmpty(),
-  body('boardTitle', 'Введите название доски').isLength({ min: 3 }).isString(),
-  body('boardBackground', 'Выберите фон доски').optional().isString(),
+  body('orderliness', 'Не должно быть пусто').notEmpty(),
+  body('title', 'Введите название доски').isLength({ min: 3 }).isString(),
+  body('background', 'Выберите фон доски').optional().isString(),
+  body('active', 'Не должно быть пусто').isBoolean(),
 ];
 
 export const columnCreateValidation = [
