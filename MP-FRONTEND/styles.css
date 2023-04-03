@@ -182,7 +182,22 @@ body {
   overflow-x: scroll;
 }
 
-.column {
+.add-column {
+  /* width: 100px; */
+  color: #757575;
+  font-weight: bold;
+  /* text-align: center; */
+  text-shadow: 0.05rem 0.05rem 0.1rem #bfb8b8;
+}
+
+.add-column::before {
+  /* display: block; */
+  content: '+';
+  padding-right: 0.4rem;
+  color: #757575;
+}
+
+/* .column {
   width: 300px;
   height: max-content;
   padding: 1.5rem;
@@ -193,13 +208,13 @@ body {
   background-color: #cfe0e5;
   border-radius: 0.5rem;
   box-shadow: 0.5rem 0.5rem 1rem rgba(0 0 0 / 20%);
-}
+} */
 
-.title-column {
+/* .title-column {
   display: flex;
-}
+} */
 
-.column-title {
+/* .column-title {
   width: 100%;
   height: 2.5rem;
   border: none;
@@ -210,52 +225,53 @@ body {
   color: inherit;
   background-color: inherit;
   cursor: pointer;
-}
+} */
 
-.add-column::before {
+/* .add-column::before {
   text-shadow: 0.2rem 0.2rem 0.6rem #958e8e;
   color: #757575;
   margin-left: 1rem;
   cursor: pointer;
-}
+} */
 
-.column-remove::before {
+/* .column-remove::before {
   text-shadow: 0.2rem 0.2rem 0.6rem #958e8e;
   color: #757575;
   margin-left: 1rem;
   cursor: pointer;
-}
+} */
 
-.placeholder {
+/* .placeholder {
   width: 100%;
   min-height: 2vw;
   display: flex;
   align-items: center;
   flex-direction: column;
   padding: 1rem 0;
-}
+} */
 
-.title-column,
+/* .title-column,
 .card,
 .add-card {
   width: 100%;
-}
+} */
 
-.add-card,
+/* .add-card,
 .add-list-item {
   color: #757575;
-}
+} */
 
-.add-card::before,
+/* .add-card::before,
 .add-list-item::before {
   content: '+';
   padding-right: 0.4rem;
   color: #757575;
-}
+} */
 
 .question-block,
 .prohibition-block,
-.board-dialog {
+.board-dialog,
+.column-dialog {
   position: fixed;
   display: flex;
   align-items: center;
@@ -275,13 +291,15 @@ body {
   justify-content: space-between;
 }
 
-.board-dialog i {
+.board-dialog i,
+.column-dialog i {
   font-size: 1.2rem;
   width: 5%;
 }
 
 .board-dialog .close-board-icon,
-.selection-img .close-board-icon {
+.selection-img .close-board-icon,
+.column-dialog .close-board-icon {
   position: absolute;
   width: 1rem;
   top: 0.7rem;
@@ -289,7 +307,8 @@ body {
   cursor: pointer;
 }
 
-.board-title {
+.board-title,
+.column-title {
   width: 100%;
   height: 2.5rem;
   margin: 0 0 1rem;
@@ -313,6 +332,13 @@ input:focus {
   cursor: pointer;
 }
 
+.board-title:hover,
+.select-background:hover,
+.column-title:hover {
+  color: #000;
+  text-shadow: 0.1rem 0.1rem 0.2rem #d3c9c9;
+}
+
 .board-background {
   background-repeat: no-repeat;
   background-size: cover;
@@ -324,7 +350,8 @@ input:focus {
 }
 
 .question-block .block-button,
-.board-dialog .block-button {
+.board-dialog .block-button,
+.column-dialog .block-button {
   display: flex;
   align-items: center;
   width: 100%;
@@ -332,12 +359,14 @@ input:focus {
   justify-content: space-between;
 }
 
-.board-dialog .block-button {
+.board-dialog .block-button,
+.column-dialog .block-button {
   justify-content: center;
 }
 
 .question-block button,
-.board-dialog .save-button {
+.board-dialog .save-button,
+.column-dialog .save-button {
   margin: 1rem auto;
   padding: 1rem 1.5rem;
   background-color: #e5eff1;
@@ -356,7 +385,8 @@ input:focus {
 }
 
 .question-block button:hover,
-.board-dialog .save-button:hover {
+.board-dialog .save-button:hover,
+.column-dialog .save-button:hover {
   background-color: #d8ebee;
 }
 

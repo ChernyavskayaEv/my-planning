@@ -25,7 +25,11 @@ class BoardDialog extends HTMLElement {
     this.#data.orderliness = document.querySelectorAll('.board').length;
     board.style.backgroundImage = this.#data.background =
       this.components.boardBackground.style.backgroundImage;
-    this.#data.active = false;
+    if (document.querySelectorAll('.board')[0].id == 'newBoard') {
+      this.#data.active = true;
+    } else {
+      this.#data.active = false;
+    }
 
     const { result: id } = await fetch('/boards', {
       method: 'POST',
@@ -36,7 +40,7 @@ class BoardDialog extends HTMLElement {
     board.id = id;
 
     const boardBox = document.querySelector('.new-board');
-    boardBox.classList.add(`${this.#data.boardId}`);
+    boardBox.classList.add(`${id}`);
     boardBox.classList.remove('new-board');
 
     this.resetValues();
@@ -121,6 +125,14 @@ class BoardDialog extends HTMLElement {
       gettingBoard.id = `br-${item.id}`;
       gettingBoard.style.backgroundImage = item.background;
 
+      const gettingBoardBox = document.createElement('div');
+      gettingBoardBox.classList.add(
+        'board-box',
+        `br-${item.id}`,
+        'animate__animated'
+      );
+      gettingBoardBox.innerHTML = `<a href="#" class="add-column">Добавить колонку</a>`;
+
       if (item.active) {
         gettingBoard.classList.add('board', 'active');
         gettingBoard.innerHTML = `
@@ -137,9 +149,17 @@ class BoardDialog extends HTMLElement {
         <i class="fa-solid fa-xmark board-remove"></i>
       </div>
         <p class="pointer">${item.title}</p>`;
+        gettingBoardBox.classList.add('hide');
       }
       document.querySelector('.add-board').before(gettingBoard);
+      document.querySelector('board-dialog').before(gettingBoardBox);
     });
+
+    addColumn();
+    // const addColumns = document.querySelectorAll('.add-column');
+    // addColumns.forEach((item) => {
+    //   item.addEventListener('click', addColumn);
+    // });
 
     const backgrounds = [
       `url('https://images.unsplash.com/photo-1669490893279-4589b3b1cf4e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80')`,
