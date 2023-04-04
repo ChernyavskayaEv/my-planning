@@ -24,11 +24,9 @@ export const boardCreateValidation = [
 ];
 
 export const columnCreateValidation = [
-  body('columnId', 'Не должно быть пусто').notEmpty(),
-  body('columnTitle', 'Введите название колонки')
-    .isLength({ min: 3 })
-    .isString(),
-  body('boardDbId', 'Не должно быть пусто').notEmpty(),
+  body('orderliness', 'Не должно быть пусто').notEmpty(),
+  body('title', 'Введите название колонки').isLength({ min: 3 }).isString(),
+  body('board', 'Не должно быть пусто').notEmpty(),
 ];
 
 export const cardCreateValidation = [

@@ -18,14 +18,14 @@ export const getOne = async (req, res) => {
     const result = await db.getOneBoard(neededId);
     if (!result) {
       return res.status(404).json({
-        message: 'Карточка не найдена',
+        message: 'Доска не найдена',
       });
     }
     res.json(result);
   } catch (err) {
     console.log(err);
     res.status(500).json({
-      message: 'Не удалось получить карточку',
+      message: 'Не удалось получить доску',
     });
   }
 };

@@ -1,10 +1,6 @@
 const boardCollection = document.querySelector('.board-collection');
-const columns = document.querySelectorAll('.column');
 const boardDialog = document.querySelector('board-dialog');
-
-columns.forEach((column) => {
-  column.addEventListener('click', columnsEventHandler);
-});
+const columnDialog = document.querySelector('column-dialog');
 
 // function dragDrop() {
 //   const cards = document.querySelectorAll('card-column');
@@ -115,6 +111,15 @@ async function removeActiveBoard(idBoard) {
   });
 }
 
+async function removeActiveColumn(idColumn) {
+  const id = idColumn.split('-')[1];
+
+  await fetch(`/columns/${id}`, {
+    method: 'DELETE',
+    headers: { 'Content-Type': 'application/json;charset=utf-8' },
+  });
+}
+
 boardCollection.addEventListener('click', (event) => {
   if (
     event.target.parentElement.classList.contains('board') &&
@@ -146,10 +151,11 @@ boardCollection.addEventListener('click', (event) => {
       boardRemoving.remove();
       boardBoxRemoving.remove();
       removeActiveBoard(boardRemoving.id);
-      if (document.querySelectorAll('.board')) {
-        updateActiveBoard(document.querySelectorAll('.board')[0].id);
-
+      console.log(document.querySelectorAll('.board').length);
+      if (document.querySelectorAll('.board').length > 0) {
         const activeBoard = document.querySelectorAll('.board')[0];
+        updateActiveBoard(activeBoard.id);
+
         activeBoard.classList.add('active');
         activeBoard.children[0].classList.remove('opacity');
         activeBoard.children[0].classList.add('pointer');
@@ -183,7 +189,6 @@ boardCollection.addEventListener('click', (event) => {
         <i class="fa-solid fa-xmark board-remove"></i>
       </div>
       <p class=""></p>`;
-      event.target.parentElement.firstElementChild.before(newBoardScreen);
     } else {
       newBoardScreen.innerHTML = `
      <div class="board-icon opacity">
@@ -191,12 +196,12 @@ boardCollection.addEventListener('click', (event) => {
        <i class="fa-solid fa-xmark board-remove"></i>
      </div>
      <p class="pointer"></p>`;
-      event.target.previousElementSibling.after(newBoardScreen);
 
       newBoardBox.classList.add('hide');
     }
+    document.querySelector('.add-board').before(newBoardScreen);
+    addColumn();
   }
-  addColumn();
 
   // const addColumns = document.querySelectorAll('.add-column');
 
@@ -213,24 +218,26 @@ function addColumn() {
   const addingColumns = document.querySelectorAll('.add-column');
   addingColumns.forEach((item) => {
     item.addEventListener('click', (event) => {
-      event.preventDefault();
       if (event.target.classList.contains('add-column')) {
-        const columnDialog = document.querySelector('column-dialog');
-        columnDialog.setNewColumn();
-        columnDialog.openColumnDialog();
         const newColumn = document.createElement('div');
         newColumn.classList.add('column');
         newColumn.id = 'newColumn';
         newColumn.innerHTML = `
-  <div class="board-icon pointer">
-     <i class="fa-regular fa-pen-to-square board-edit"></i>
-     <i class="fa-solid fa-xmark board-remove"></i>
-  </div>
-  <p class=""></p>
-  <div class="placeholder"></div>
-  <a href="#" class="add-card">Добавить карточку</a>`;
-        // event.target.parentElement.parentElement.after(newColumn);
-        // newColumn.addEventListener('click', columnsEventHandler);
+           <div class="column-icon">
+              <i class="fa-regular fa-pen-to-square column-edit pointer"></i>
+              <i class="fa-solid fa-xmark column-remove pointer"></i>
+           </div>
+           <p></p>
+           <div class="placeholder"></div>
+           <div class="add-card pointer">Добавить карточку</div>`;
+        event.target.before(newColumn);
+
+        columnDialog.setNewColumn();
+        columnDialog.openColumnDialog();
+        const columns = document.querySelectorAll('.column');
+        columns.forEach((column) => {
+          column.addEventListener('click', columnsEventHandler);
+        });
         // dragDrop();
       }
     });
@@ -325,6 +332,7 @@ function addColumn() {
 function removingColumn(event) {
   document.querySelector('.yes').addEventListener('click', () => {
     event.target.parentElement.parentElement.remove();
+    removeActiveColumn(activeColumn.id);
   });
 }
 
@@ -361,23 +369,25 @@ function closing() {
   });
 }
 
-// function columnsEventHandler(event) {
-//   event.preventDefault();
-//   if (event.target.classList.contains('add-column')) {
-//     addColumn(event);
-//   }
-//   if (event.target.classList.contains('column-remove')) {
-//     if (event.target.parentElement.nextElementSibling.children.length > 0) {
-//       addBlurBoardBox();
-//       document.querySelector('.question-block').classList.remove('hide');
-//       document.querySelector('.question-column').classList.remove('hide');
-//       removingColumn(event);
-//       closing();
-//     } else {
-//       event.target.parentElement.parentElement.remove();
-//     }
-//   }
-//   if (event.target.classList.contains('add-card')) {
-//     addCard(event);
-//   }
-// }
+function columnsEventHandler(event) {
+  const activeColumn = event.target.parentElement.parentElement;
+  if (event.target.classList.contains('column-edit')) {
+    columnDialog.setOldColumn(activeColumn.id);
+    columnDialog.openColumnDialog();
+  }
+  if (event.target.classList.contains('column-remove')) {
+    if (activeColumn.children[2].children.length > 0) {
+      addBlurBoardBox();
+      document.querySelector('.question-block').classList.remove('hide');
+      document.querySelector('.question-column').classList.remove('hide');
+      removingColumn(event);
+      closing();
+    } else {
+      activeColumn.remove();
+      removeActiveColumn(activeColumn.id);
+    }
+  }
+  if (event.target.classList.contains('add-card')) {
+    addCard(event);
+  }
+}

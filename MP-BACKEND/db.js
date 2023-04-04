@@ -66,21 +66,22 @@ export const removeBoard = async (neededId) => {
 };
 
 export const getColumns = async () => {
-  const sql = `SELECT * FROM table_columns`;
+  const sql = `SELECT * FROM table_columns tc
+  ORDER BY board, orderliness;`;
   const { rows } = await pool.query(sql);
   return rows;
 };
 
 export const getOneColumn = async (neededId) => {
   const sql = `SELECT * FROM table_columns
-  WHERE columnid = ${neededId};`;
-  const { rowCount, rows } = await pool.query(sql);
-  return { rowCount, rows };
+  WHERE id = ${neededId};`;
+  const { rows } = await pool.query(sql);
+  return rows.pop();
 };
 
 export const newColumn = async ({ ...fields }) => {
   const params = Object.entries(fields).map(([k, v]) => v);
-  const sql = `INSERT INTO table_columns ( columnId , columnTitle , boardDbId )
+  const sql = `INSERT INTO table_columns ( orderliness , title , board )
   VALUES ($1, $2, $3)
   RETURNING id;`;
   const { rows } = await pool.query(sql, params);
@@ -93,14 +94,17 @@ export const updateColumn = async ({ neededId, ...fields }) => {
   SET ${Object.entries(fields)
     .map(([k, v]) => `${k} = $${params.push(v)}`)
     .join(',')}
-  WHERE columnid = ${neededId};`;
+  WHERE id = ${neededId};`;
   const { rowCount, command } = await pool.query(sql, params);
   return { rowCount, command };
 };
 
 export const removeColumn = async (neededId) => {
-  const sql = `DELETE FROM table_columns 
-  WHERE columnid = ${neededId}`;
+  const sql = `
+  UPDATE table_columns SET orderliness = orderliness-1
+  WHERE orderliness > (SELECT orderliness from table_columns WHERE id = ${neededId});
+  DELETE FROM table_columns 
+  WHERE id = ${neededId}`;
   const { rowCount, command } = await pool.query(sql);
   return { rowCount, command };
 };

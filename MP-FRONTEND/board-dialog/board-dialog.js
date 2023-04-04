@@ -43,7 +43,7 @@ class BoardDialog extends HTMLElement {
     boardBox.classList.add(`${id}`);
     boardBox.classList.remove('new-board');
 
-    this.resetValues();
+    this.resetValuesBoard();
   }
 
   async setOldBoard(idBoard) {
@@ -69,7 +69,7 @@ class BoardDialog extends HTMLElement {
       this.components.boardTitle.value;
     board.style.backgroundImage = this.#data.background =
       this.components.boardBackground.style.backgroundImage;
-    this.resetValues();
+    this.resetValuesBoard();
 
     await fetch(`/boards/${this.#data.id}`, {
       method: 'PATCH',
@@ -83,13 +83,13 @@ class BoardDialog extends HTMLElement {
     addBlurBoardBox();
   }
 
-  revertAdding() {
+  revertAddingBoard() {
     document.getElementById('newBoard').remove();
     document.querySelector('.new-board').remove();
-    this.resetValues();
+    this.resetValuesBoard();
   }
 
-  resetValues() {
+  resetValuesBoard() {
     this.components.boardTitle.value = '';
     this.components.boardBackground.classList.add('hide');
     this.components.boardBackground.style.backgroundImage = '';
@@ -112,54 +112,6 @@ class BoardDialog extends HTMLElement {
       boardBackground: this.querySelector('.board-background'),
       selectionImg: this.querySelector('.selection-img'),
     };
-
-    const boards = await fetch('/boards', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json;charset=utf-8',
-      },
-    }).then((res) => res.json());
-
-    boards.forEach((item) => {
-      const gettingBoard = document.createElement('div');
-      gettingBoard.id = `br-${item.id}`;
-      gettingBoard.style.backgroundImage = item.background;
-
-      const gettingBoardBox = document.createElement('div');
-      gettingBoardBox.classList.add(
-        'board-box',
-        `br-${item.id}`,
-        'animate__animated'
-      );
-      gettingBoardBox.innerHTML = `<a href="#" class="add-column">Добавить колонку</a>`;
-
-      if (item.active) {
-        gettingBoard.classList.add('board', 'active');
-        gettingBoard.innerHTML = `
-        <div class="board-icon pointer">
-        <i class="fa-regular fa-pen-to-square board-edit"></i>
-        <i class="fa-solid fa-xmark board-remove"></i>
-      </div>
-        <p>${item.title}</p>`;
-      } else {
-        gettingBoard.classList.add('board');
-        gettingBoard.innerHTML = `
-        <div class="board-icon opacity">
-        <i class="fa-regular fa-pen-to-square board-edit"></i>
-        <i class="fa-solid fa-xmark board-remove"></i>
-      </div>
-        <p class="pointer">${item.title}</p>`;
-        gettingBoardBox.classList.add('hide');
-      }
-      document.querySelector('.add-board').before(gettingBoard);
-      document.querySelector('board-dialog').before(gettingBoardBox);
-    });
-
-    addColumn();
-    // const addColumns = document.querySelectorAll('.add-column');
-    // addColumns.forEach((item) => {
-    //   item.addEventListener('click', addColumn);
-    // });
 
     const backgrounds = [
       `url('https://images.unsplash.com/photo-1669490893279-4589b3b1cf4e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80')`,
@@ -266,9 +218,9 @@ class BoardDialog extends HTMLElement {
       }
       if (event.target.classList.contains('close-board-icon')) {
         if (document.getElementById('newBoard')) {
-          this.revertAdding();
+          this.revertAddingBoard();
         } else {
-          this.resetValues();
+          this.resetValuesBoard();
         }
       }
       if (event.target.classList.contains('save-button')) {
@@ -276,7 +228,7 @@ class BoardDialog extends HTMLElement {
           this.components.boardTitle.value == '' &&
           this.components.boardBackground.style.backgroundImage == ''
         ) {
-          this.revertAdding();
+          this.revertAddingBoard();
         } else if (document.getElementById('newBoard')) {
           this.saveNewBoard();
         } else {
