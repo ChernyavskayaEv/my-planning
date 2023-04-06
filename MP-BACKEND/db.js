@@ -20,13 +20,6 @@ export const getBoards = async () => {
   return rows;
 };
 
-export const getOneBoard = async (neededId) => {
-  const sql = `SELECT * FROM table_boards
-  WHERE id = ${neededId};`;
-  const { rows } = await pool.query(sql);
-  return rows.pop();
-};
-
 export const newBoard = async ({ ...fields }) => {
   const params = Object.entries(fields).map(([k, v]) => v);
   const sql = `INSERT INTO table_boards ( orderliness , title , background , active )
@@ -72,13 +65,6 @@ export const getColumns = async () => {
   return rows;
 };
 
-export const getOneColumn = async (neededId) => {
-  const sql = `SELECT * FROM table_columns
-  WHERE id = ${neededId};`;
-  const { rows } = await pool.query(sql);
-  return rows.pop();
-};
-
 export const newColumn = async ({ ...fields }) => {
   const params = Object.entries(fields).map(([k, v]) => v);
   const sql = `INSERT INTO table_columns ( orderliness , title , board )
@@ -110,23 +96,17 @@ export const removeColumn = async (neededId) => {
 };
 
 export const getCards = async () => {
-  const sql = `SELECT * FROM table_cards`;
+  const sql = `SELECT * FROM table_cards
+  ORDER BY columnid, orderliness;`;
   const { rows } = await pool.query(sql);
   return rows;
 };
 
-export const getOneCard = async (neededId) => {
-  const sql = `SELECT * FROM table_cards
-  WHERE cardid = ${neededId};`;
-  const { rowCount, rows } = await pool.query(sql);
-  return { rowCount, rows };
-};
-
 export const newCard = async ({ ...fields }) => {
   const params = Object.entries(fields).map(([k, v]) =>
-    k == 'cardList' ? JSON.stringify(v) : v
+    k == 'list' ? JSON.stringify(v) : v
   );
-  const sql = `INSERT INTO table_cards (cardId, cardTitle, cardDescription, listTitle, cardList, columnDbId )
+  const sql = `INSERT INTO table_cards (orderliness, title, description, headlist, list, columnid )
   VALUES ($1, $2, $3, $4, $5, $6)
   RETURNING id;`;
   const { rows } = await pool.query(sql, params);
@@ -138,37 +118,37 @@ export const updateCard = async ({ neededId, ...fields }) => {
   const sql = `UPDATE table_cards tc 
   SET ${Object.entries(fields)
     .map(([k, v]) =>
-      k == 'cardList'
+      k == 'list'
         ? `${k} = $${params.push(JSON.stringify(v))}`
         : `${k} = $${params.push(v)}`
     )
     .join(',')}
-  WHERE cardid = ${neededId};`;
+  WHERE id = ${neededId};`;
   const { rowCount, command } = await pool.query(sql, params);
   return { rowCount, command };
 };
 
 export const removeCard = async (neededId) => {
-  const sql = `DELETE FROM table_cards tc 
-  WHERE cardId = ${neededId}`;
+  const sql = `
+  UPDATE table_cards SET orderliness = orderliness-1
+  WHERE orderliness > (SELECT orderliness from table_cards WHERE id = ${neededId});
+  DELETE FROM table_cards 
+  WHERE id = ${neededId}`;
   const { rowCount, command } = await pool.query(sql);
   return { rowCount, command };
 };
 
 export default {
   getBoards,
-  getOneBoard,
   updateActiveBoard,
   newBoard,
   updateBoard,
   removeBoard,
   getColumns,
-  getOneColumn,
   newColumn,
   updateColumn,
   removeColumn,
   getCards,
-  getOneCard,
   newCard,
   updateCard,
   removeCard,

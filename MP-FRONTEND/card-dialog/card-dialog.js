@@ -2,13 +2,12 @@ class CardDialog extends HTMLElement {
   #template;
   #initialState = {};
   #data = {
-    cardId: '',
-    cardTitle: '',
-    cardDescription: '',
-    listTitle: '',
-    cardList: [],
-    columnDbId: '',
-    // board: '',
+    orderliness: '',
+    title: '',
+    description: '',
+    headlist: '',
+    list: [],
+    columnid: '',
   };
 
   get data() {
@@ -51,75 +50,67 @@ class CardDialog extends HTMLElement {
 
   setNewCard() {
     this.#data = {
-      cardId: Date.now(),
-      cardTitle: '',
-      cardDescription: '',
-      listTitle: '',
-      cardList: [],
-      columnDbId: '',
-      // board: '',
+      orderliness: '',
+      title: '',
+      description: '',
+      headlist: '',
+      list: [],
+      columnid: '',
     };
     this.#initialState = { ...this.#data };
+    console.log('setNewCard-#data', this.#data);
   }
 
   async saveNewCard() {
     const card = document.querySelector('#new');
+    this.#data.orderliness = card.parentElement.children.length;
+    this.#data.title = this.components.cardTitle.value;
+    this.#data.description = this.components.textareaDescription.value;
+    this.#data.headlist = this.components.listTitle.value;
+    this.#data.list = [...this.querySelectorAll('.list-item-description')].map(
+      (el, i) => {
+        return {
+          order: i,
+          description: el.value,
+          checking: el.classList.contains('line-through'),
+        };
+      }
+    );
+    this.#data.columnid = card.parentElement.parentElement.id.split('-')[1];
 
-    card.cardId = this.#data.cardId;
-    card.cardTitle = this.#data.cardTitle = this.components.cardTitle.value;
-    card.cardDescription = this.#data.cardDescription =
-      this.components.textareaDescription.value;
-    card.listTitle = this.#data.listTitle = this.components.listTitle.value;
-    card.cardList = this.#data.cardList = [
-      ...this.querySelectorAll('.list-item-description'),
-    ].map((el, i) => {
-      return {
-        order: i,
-        description: el.value,
-        checking: el.classList.contains('line-through'),
-      };
-    });
-    this.#data.columnDbId = card.parentElement.parentElement.id;
-    // this.#data.board = document.querySelector('.board.active').id;
+    card.data = this.#data;
 
-    // const { result: id } = await fetch('/cards', {
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/json;charset=utf-8',
-    //   },
-    //   body: JSON.stringify({ ...this.#data }),
-    // }).then((res) => res.json());
-    // card.id = id;
+    const { result: id } = await fetch('/cards', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json;charset=utf-8',
+      },
+      body: JSON.stringify({ ...this.#data }),
+    }).then((res) => res.json());
+    card.id = id;
 
-    console.log([...card.parentElement.children]);
+    console.log('saveNewCard-#data', this.#data);
 
     this.resetValues();
   }
 
-  setOldCard(cardId, cardTitle, cardDescription, cardList, listTitle) {
+  setOldCard(id, dataset) {
     this.resetValues();
-    this.#data = {
-      cardId: cardId,
-      cardTitle: cardTitle,
-      cardDescription: cardDescription,
-      listTitle: listTitle,
-      cardList: cardList,
-      columnDbId: '',
-      // board: '',
-    };
+    this.#data = dataset;
+    this.#data.id = id;
     this.#initialState = { ...this.#data };
-    this.components.cardTitle.value = cardTitle;
+    this.components.cardTitle.value = this.#data.title;
 
-    if (cardDescription) {
+    if (this.#data.description) {
       this.components.addDescription.classList.add('hide');
       this.components.cardDescription.classList.remove('hide');
       this.components.iconDescriptionModal.classList.remove('opacity');
-      this.components.textareaDescription.value = cardDescription;
+      this.components.textareaDescription.value = this.#data.description;
     }
 
-    if (cardList.length > 0) {
-      this.components.listTitle.value = listTitle;
-      cardList.map((el, i) => {
+    if (this.#data.list.length > 0) {
+      this.components.listTitle.value = this.#data.headlist;
+      this.#data.list.map((el, i) => {
         this.createListItem();
         const listItem = this.querySelectorAll('.list-item-description')[i];
         const checkboxInput = this.querySelectorAll('.checkbox-input')[i];
@@ -142,40 +133,42 @@ class CardDialog extends HTMLElement {
         }
       });
     }
+    console.log('setOldCard-#data', this.#data);
   }
 
-  saveOldCard() {
-    const card = document.getElementById(`${this.#data.cardId}`);
-    card.id = this.#data.cardId;
-    card.cardId = this.#data.cardId;
-    card.cardTitle = this.#data.cardTitle = this.components.cardTitle.value;
-    card.cardDescription = this.#data.cardDescription =
-      this.components.textareaDescription.value;
-    card.listTitle = this.#data.listTitle = this.components.listTitle.value;
-    card.cardList = this.#data.cardList = [
-      ...this.querySelectorAll('.list-item-description'),
-    ].map((el, i) => {
-      return {
-        order: i,
-        description: el.value,
-        checking: el.classList.contains('line-through'),
-      };
+  async saveOldCard() {
+    const card = document.getElementById(`cr-${this.#data.id}`);
+    this.#data.title = this.components.cardTitle.value;
+    this.#data.description = this.components.textareaDescription.value;
+    this.#data.headlist = this.components.listTitle.value;
+    this.#data.list = [...this.querySelectorAll('.list-item-description')].map(
+      (el, i) => {
+        return {
+          order: i,
+          description: el.value,
+          checking: el.classList.contains('line-through'),
+        };
+      }
+    );
+    card.data = this.#data;
+    console.log('saveOldCard-#data', this.#data);
+
+    await fetch(`/cards/${this.#data.id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json;charset=utf-8' },
+      body: JSON.stringify({ ...this.#data }),
     });
-    this.#data.columnDbId = card.parentElement.parentElement.id;
-    // this.#data.board = document.querySelector('.board.active').id;
-    console.log('card', this.#data);
     this.resetValues();
   }
 
   comparisonData() {
     const comparisonCardList = () => {
-      if (this.#data.cardList.length == this.#initialState.cardList.length) {
-        for (let i = 0; i < this.#data.cardList.length; i++) {
+      if (this.#data.list.length == this.#initialState.list.length) {
+        for (let i = 0; i < this.#data.list.length; i++) {
           if (
-            this.#data.cardList[i].description ==
-              this.#initialState.cardList[i].description &&
-            this.#data.cardList[i].checking ==
-              this.#initialState.cardList[i].checking
+            this.#data.list[i].description ==
+              this.#initialState.list[i].description &&
+            this.#data.list[i].checking == this.#initialState.list[i].checking
           ) {
             continue;
           } else {
@@ -188,9 +181,9 @@ class CardDialog extends HTMLElement {
       return true;
     };
     return (
-      this.#data.cardTitle == this.#initialState.cardTitle &&
-      this.#data.cardDescription == this.#initialState.cardDescription &&
-      this.#data.listTitle == this.#initialState.listTitle &&
+      this.#data.title == this.#initialState.title &&
+      this.#data.description == this.#initialState.description &&
+      this.#data.headlist == this.#initialState.headlist &&
       comparisonCardList()
     );
   }

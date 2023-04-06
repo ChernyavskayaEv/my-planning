@@ -30,15 +30,13 @@ export const columnCreateValidation = [
 ];
 
 export const cardCreateValidation = [
-  body('cardId', 'Не должно быть пусто').notEmpty(),
-  body('cardTitle', 'Введите название карточки')
-    .isLength({ min: 5 })
-    .isString(),
-  body('cardDescription', 'Введите описание карточки').optional().isString(),
-  body('listTitle', 'Введите название чек-листа')
+  body('orderliness', 'Не должно быть пусто').notEmpty(),
+  body('title', 'Введите название карточки').isLength({ min: 5 }).isString(),
+  body('description', 'Введите описание карточки').optional().isString(),
+  body('headlist', 'Введите название чек-листа')
     .if(body('cardList').isArray({ min: 1 }))
     .notEmpty()
     .isString(),
-  body('cardList', 'Заполните чек-лист').optional().isArray(),
-  body('columnDbId', 'Не должно быть пусто').notEmpty(),
+  body('list', 'Заполните чек-лист').optional().isArray(),
+  body('columnid', 'Не должно быть пусто').notEmpty(),
 ];

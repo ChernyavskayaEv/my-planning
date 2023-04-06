@@ -120,6 +120,15 @@ async function removeActiveColumn(idColumn) {
   });
 }
 
+async function removeActiveCard(idCard) {
+  const id = idCard.split('-')[1];
+
+  await fetch(`/cards/${id}`, {
+    method: 'DELETE',
+    headers: { 'Content-Type': 'application/json;charset=utf-8' },
+  });
+}
+
 boardCollection.addEventListener('click', (event) => {
   if (
     event.target.parentElement.classList.contains('board') &&
@@ -138,7 +147,17 @@ boardCollection.addEventListener('click', (event) => {
     event.target.parentElement.parentElement.classList.contains('active') &&
     event.target.classList.contains('board-edit')
   ) {
-    boardDialog.setOldBoard(event.target.parentElement.parentElement.id);
+    const oldBoard = event.target.parentElement.parentElement;
+    const orderBoard =
+      [...document.querySelectorAll('.board')].findIndex((item) =>
+        item.classList.contains('active')
+      ) + 1;
+    boardDialog.setOldBoard(
+      oldBoard.id.split('-')[1],
+      orderBoard,
+      event.target.parentElement.nextElementSibling.textContent,
+      oldBoard.style.backgroundImage
+    );
     boardDialog.openBoardDialog();
   }
   if (
@@ -202,16 +221,6 @@ boardCollection.addEventListener('click', (event) => {
     document.querySelector('.add-board').before(newBoardScreen);
     addColumn();
   }
-
-  // const addColumns = document.querySelectorAll('.add-column');
-
-  // addColumns.forEach((item) => {
-  //   item.addEventListener('click', addColumn);
-  // });
-  // const columns = document.querySelectorAll('.column');
-  // columns.forEach((column) => {
-  //   column.addEventListener('click', columnsEventHandler);
-  // });
 });
 
 function addColumn() {
@@ -244,96 +253,97 @@ function addColumn() {
   });
 }
 
-// function addCard(event) {
-//   if (event.target.classList.contains('add-card')) {
-//     const cardDialog = document.querySelector('card-dialog');
-//     cardDialog.setNewCard();
-//     const cardModal = document.querySelector('.card-modal');
-//     cardModal.classList.remove('hide');
-//     addBlurBoardBox();
-//     const newCardColumn = document.createElement('card-column');
-//     newCardColumn.id = 'new';
-//     newCardColumn.setAttribute('draggable', true);
-//     event.target.previousElementSibling.append(newCardColumn);
-//   }
-// }
+function addCard(event) {
+  if (event.target.classList.contains('add-card')) {
+    const cardDialog = document.querySelector('card-dialog');
+    cardDialog.setNewCard();
+    const cardModal = document.querySelector('.card-modal');
+    cardModal.classList.remove('hide');
+    addBlurBoardBox();
+    const newCardColumn = document.createElement('card-column');
+    newCardColumn.id = 'new';
+    newCardColumn.setAttribute('draggable', true);
+    event.target.previousElementSibling.append(newCardColumn);
+  }
+}
 
-// function closeCardModal() {
-//   const cardModal = document.querySelector('card-dialog');
-//   cardModal.data.cardTitle = cardModal.querySelector('.card-title').value;
-//   cardModal.data.cardDescription = cardModal.querySelector(
-//     '.textarea-description'
-//   ).value;
-//   cardModal.data.cardList = [
-//     ...cardModal.querySelectorAll('.list-item-description'),
-//   ].map((el, i) => {
-//     return {
-//       order: i,
-//       description: el.value,
-//       checking: el.classList.contains('line-through'),
-//     };
-//   });
-//   if (!cardModal.comparisonData()) {
-//     document.querySelector('.clarification-block').classList.remove('hide');
-//     document.querySelector('.card-modal').classList.add('blur');
-//   } else {
-//     hideCardModal();
-//     const card = document.getElementById('new');
-//     if (card) {
-//       card.remove();
-//     }
-//     const cardModal = document.querySelector('card-dialog');
-//     cardModal.resetValues();
-//   }
-
-//   document
-//     .querySelector('.button-yes')
-//     .addEventListener('click', saveCardModal);
-
-//   document.querySelector('.button-no').addEventListener('click', () => {
-//     hideCardModal();
-//     const card = document.getElementById('new');
-//     if (card) {
-//       card.remove();
-//     }
-//     const cardModal = document.querySelector('card-dialog');
-//     cardModal.resetValues();
-//   });
-// }
-
-// function saveCardModal() {
-//   hideCardModal();
-//   dragDrop();
-//   if (
-//     document.querySelector('card-dialog').querySelector('.card-title').value ==
-//       '' &&
-//     document.querySelector('.textarea-description').value == '' &&
-//     document.querySelector('.list-title').value == '' &&
-//     document.querySelectorAll('.list-item-description').length == 0
-//   ) {
-//     document.getElementById('new').remove();
-//   } else {
-//     const cardModal = document.querySelector('card-dialog');
-//     if (document.querySelector('#new')) {
-//       cardModal.saveNewCard();
-//     } else {
-//       cardModal.saveOldCard();
-//     }
-//   }
-// }
-
-// function hideCardModal() {
-//   document.querySelector('.clarification-block').classList.add('hide');
-//   document.querySelector('.card-modal').classList.add('hide');
-//   document.querySelector('.card-modal').classList.remove('blur');
-//   removeBlurBoardBox();
-// }
-
-function removingColumn(event) {
-  document.querySelector('.yes').addEventListener('click', () => {
-    event.target.parentElement.parentElement.remove();
-    removeActiveColumn(activeColumn.id);
+function closeCardModal() {
+  const cardModal = document.querySelector('card-dialog');
+  cardModal.data.cardTitle = cardModal.querySelector('.card-title').value;
+  cardModal.data.cardDescription = cardModal.querySelector(
+    '.textarea-description'
+  ).value;
+  cardModal.data.cardList = [
+    ...cardModal.querySelectorAll('.list-item-description'),
+  ].map((el, i) => {
+    return {
+      order: i,
+      description: el.value,
+      checking: el.classList.contains('line-through'),
+    };
   });
+  if (!cardModal.comparisonData()) {
+    document.querySelector('.clarification-block').classList.remove('hide');
+    document.querySelector('.card-modal').classList.add('blur');
+  } else {
+    hideCardModal();
+    const card = document.getElementById('new');
+    if (card) {
+      card.remove();
+    }
+    const cardModal = document.querySelector('card-dialog');
+    cardModal.resetValues();
+  }
+
+  document
+    .querySelector('.button-yes')
+    .addEventListener('click', saveCardModal);
+
+  document.querySelector('.button-no').addEventListener('click', () => {
+    hideCardModal();
+    const card = document.getElementById('new');
+    if (card) {
+      card.remove();
+    }
+    const cardModal = document.querySelector('card-dialog');
+    cardModal.resetValues();
+  });
+}
+
+function saveCardModal() {
+  hideCardModal();
+  // dragDrop();
+  if (
+    document.querySelector('card-dialog').querySelector('.card-title').value ==
+      '' &&
+    document.querySelector('.textarea-description').value == '' &&
+    document.querySelector('.list-title').value == '' &&
+    document.querySelectorAll('.list-item-description').length == 0
+  ) {
+    document.getElementById('new').remove();
+  } else {
+    const cardModal = document.querySelector('card-dialog');
+    if (document.querySelector('#new')) {
+      cardModal.saveNewCard();
+    } else {
+      cardModal.saveOldCard();
+    }
+  }
+}
+
+function hideCardModal() {
+  document.querySelector('.clarification-block').classList.add('hide');
+  document.querySelector('.card-modal').classList.add('hide');
+  document.querySelector('.card-modal').classList.remove('blur');
+  removeBlurBoardBox();
+}
+
+function hideQuestionBlock() {
+  document.querySelector('.question-block').classList.add('hide');
+  document.querySelector('.question-board').classList.add('hide');
+  document.querySelector('.question-column').classList.add('hide');
+  document.querySelector('.question-card').classList.add('hide');
+  removeBlurBoardBox();
 }
 
 function removingBoard(boardRemoving, boardBoxRemoving) {
@@ -350,29 +360,49 @@ function removingBoard(boardRemoving, boardBoxRemoving) {
       activeBoard.children[0].classList.add('pointer');
       activeBoard.children[1].classList.remove('pointer');
     }
+    hideQuestionBlock();
+  });
+}
 
-    document.querySelector('.question-block').classList.add('hide');
-    document.querySelector('.question-board').classList.add('hide');
-    document.querySelector('.question-column').classList.add('hide');
-    document.querySelector('.question-card').classList.add('hide');
-    removeBlurBoardBox();
+function removingColumn(event) {
+  document.querySelector('.yes').addEventListener('click', () => {
+    const thisColumn = event.target.parentElement.parentElement;
+    thisColumn.remove();
+    removeActiveColumn(thisColumn.id);
+    hideQuestionBlock();
+  });
+}
+
+function removingCard(event) {
+  document.querySelector('.yes').addEventListener('click', () => {
+    const thisCard = event.target.parentElement.parentElement.parentElement;
+    thisCard.remove();
+    removeActiveCard(thisCard.id);
+    hideQuestionBlock();
   });
 }
 
 function closing() {
   document.querySelector('.no').addEventListener('click', () => {
-    document.querySelector('.question-block').classList.add('hide');
-    document.querySelector('.question-board').classList.add('hide');
-    document.querySelector('.question-column').classList.add('hide');
-    document.querySelector('.question-card').classList.add('hide');
-    removeBlurBoardBox();
+    hideQuestionBlock();
   });
 }
 
 function columnsEventHandler(event) {
   const activeColumn = event.target.parentElement.parentElement;
+  const idActiveColumn = activeColumn.id.split('-')[1];
+  const boardActiveColumn = document.querySelector('.active').id;
+  const orderActiveColumn =
+    [...document.querySelector(`.${boardActiveColumn}`).children].findIndex(
+      (item) => item.id == activeColumn.id
+    ) + 1;
   if (event.target.classList.contains('column-edit')) {
-    columnDialog.setOldColumn(activeColumn.id);
+    columnDialog.setOldColumn(
+      idActiveColumn,
+      orderActiveColumn,
+      event.target.parentElement.nextElementSibling.textContent,
+      boardActiveColumn.split('-')[1]
+    );
     columnDialog.openColumnDialog();
   }
   if (event.target.classList.contains('column-remove')) {

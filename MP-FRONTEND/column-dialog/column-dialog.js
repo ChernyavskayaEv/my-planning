@@ -36,15 +36,13 @@ class ColumnDialog extends HTMLElement {
     this.resetValuesColumn();
   }
 
-  async setOldColumn(idColumn) {
-    const id = idColumn.split('-')[1];
-
-    this.#data = await fetch(`/columns/${id}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json;charset=utf-8',
-      },
-    }).then((res) => res.json());
+  async setOldColumn(id, orderliness, title, board) {
+    this.#data = {
+      id: id,
+      orderliness: orderliness,
+      title: title,
+      board: board,
+    };
 
     this.#initialState = { ...this.#data };
     this.components.columnTitle.value = this.#data.title;

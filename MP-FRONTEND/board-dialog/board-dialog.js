@@ -46,15 +46,14 @@ class BoardDialog extends HTMLElement {
     this.resetValuesBoard();
   }
 
-  async setOldBoard(idBoard) {
-    const id = idBoard.split('-')[1];
-
-    this.#data = await fetch(`/boards/${id}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json;charset=utf-8',
-      },
-    }).then((res) => res.json());
+  async setOldBoard(id, orderliness, title, background) {
+    this.#data = {
+      id: id,
+      orderliness: orderliness,
+      title: title,
+      background: background,
+      active: true,
+    };
 
     this.#initialState = { ...this.#data };
     this.components.boardTitle.value = this.#data.title;

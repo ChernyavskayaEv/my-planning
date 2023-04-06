@@ -1,60 +1,99 @@
 class CardColumn extends HTMLElement {
   #template;
   #data = {
-    cardId: '',
-    cardTitle: '',
-    cardDescription: '',
-    cardList: [],
-    listTitle: '',
+    orderliness: '',
+    title: '',
+    description: '',
+    headlist: '',
+    list: [],
+    columnid: '',
   };
 
-  set cardId(value) {
-    this.#data.cardId = value;
-  }
+  set data(value) {
+    this.#data = value;
 
-  set cardTitle(value) {
-    this.#data.cardTitle = value;
-    this.components.cardTitle.textContent = value;
+    this.components.cardTitle.textContent = this.#data.title;
     this.components.cardColumn.classList.remove('hide');
-  }
 
-  set cardDescription(value) {
-    this.#data.cardDescription = value;
-    if (!this.#data.cardDescription == '') {
+    if (!this.#data.description == '') {
       this.components.iconDescriptionColumn.classList.remove('hide');
     } else {
       this.components.iconDescriptionColumn.classList.add('hide');
     }
-  }
 
-  set cardList(array) {
-    this.#data.cardList = array;
-    if (this.#data.cardList.length > 0) {
+    if (this.#data.list.length > 0) {
       this.components.blockList.classList.remove('hide');
       this.components.cardListInfo.textContent = `${
-        this.#data.cardList.filter((el) => el.checking).length
-      }/${this.#data.cardList.length}`;
+        this.#data.list.filter((el) => el.checking).length
+      }/${this.#data.list.length}`;
     } else {
       this.components.blockList.classList.add('hide');
     }
   }
 
-  set listTitle(value) {
-    this.#data.listTitle = value;
+  get data() {
+    return this.#data;
   }
 
-  showContent() {
-    this.cardTitle = this.#data.cardTitle;
-    this.cardDescription = this.#data.cardDescription;
-    this.cardList = this.#data.cardList;
-    this.listTitle = this.#data.listTitle;
-  }
+  // set orderliness(value) {
+  //   this.#data.orderliness = value;
+  // }
+
+  // set title(value) {
+  //   this.#data.title = value;
+  //   this.components.cardTitle.textContent = value;
+  //   this.components.cardColumn.classList.remove('hide');
+  // }
+
+  // set description(value) {
+  //   this.#data.description = value;
+  //   if (!this.#data.description == '') {
+  //     this.components.iconDescriptionColumn.classList.remove('hide');
+  //   } else {
+  //     this.components.iconDescriptionColumn.classList.add('hide');
+  //   }
+  // }
+
+  // set headlist(value) {
+  //   this.#data.headlist = value;
+  // }
+
+  // set list(array) {
+  //   this.#data.list = array;
+  //   if (this.#data.list.length > 0) {
+  //     this.components.blockList.classList.remove('hide');
+  //     this.components.cardListInfo.textContent = `${
+  //       this.#data.list.filter((el) => el.checking).length
+  //     }/${this.#data.list.length}`;
+  //   } else {
+  //     this.components.blockList.classList.add('hide');
+  //   }
+  // }
+
+  // set orderliness(value) {
+  //   this.#data.orderliness = value;
+  // }
+
+  // showContent() {
+  //   this.orderliness = this.#data.orderliness;
+  //   this.title = this.#data.title;
+  //   this.description = this.#data.description;
+  //   this.headlist = this.#data.headlist;
+  //   this.list = this.#data.list;
+  //   this.columnid = this.#data.columnid;
+  // }
 
   constructor() {
     super();
     this.#template = fetch('/card-column/card-column.html').then((res) =>
       res.text()
     );
+  }
+
+  async init(dataset) {
+    await this.#template;
+    this.components.cardColumn.classList.remove('hide');
+    this.data = { ...dataset };
   }
 
   async connectedCallback() {
@@ -68,26 +107,19 @@ class CardColumn extends HTMLElement {
     };
 
     this.components.cardColumn.addEventListener('click', (event) => {
+      const activeCard = event.target.parentElement.parentElement.parentElement;
       if (event.target.classList.contains('icon-open')) {
-        event.preventDefault();
         const cardDialog = document.querySelector('card-dialog');
-        cardDialog.setOldCard(
-          this.#data.cardId,
-          this.#data.cardTitle,
-          this.#data.cardDescription,
-          this.#data.cardList,
-          this.#data.listTitle
-        );
+        cardDialog.setOldCard(activeCard.id.split('-')[1], this.#data);
         const cardModal = document.querySelector('.card-modal');
         cardModal.classList.remove('hide');
         addBlurBoardBox();
       }
       if (event.target.classList.contains('card-remove')) {
-        event.preventDefault();
         document.querySelector('.question-block').classList.remove('hide');
         document.querySelector('.question-card').classList.remove('hide');
 
-        removing(event);
+        removingCard(event);
         closing();
       }
     });

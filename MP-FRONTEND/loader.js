@@ -40,12 +40,7 @@
     document.querySelector('.add-board').before(receivedBoard);
     document.querySelector('board-dialog').before(receivedBoardBox);
   });
-
   addColumn();
-  // const addColumns = document.querySelectorAll('.add-column');
-  // addColumns.forEach((item) => {
-  //   item.addEventListener('click', addColumn);
-  // });
 
   const gettingColumns = await fetch('/columns', {
     method: 'GET',
@@ -75,5 +70,22 @@
   const columns = document.querySelectorAll('.column');
   columns.forEach((column) => {
     column.addEventListener('click', columnsEventHandler);
+  });
+
+  const gettingCards = await fetch('/cards', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json;charset=utf-8',
+    },
+  }).then((res) => res.json());
+
+  gettingCards.forEach(({ id, ...dataset }) => {
+    const receivedCard = document.createElement('card-column');
+    receivedCard.id = `cr-${id}`;
+    receivedCard.setAttribute('draggable', true);
+    document
+      .querySelector(`#cl-${dataset.columnid}`)
+      .children[2].append(receivedCard);
+    receivedCard.init(dataset);
   });
 })();
