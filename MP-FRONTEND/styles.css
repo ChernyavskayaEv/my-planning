@@ -105,6 +105,7 @@ body {
   align-items: center;
   background: #b3ccd5;
   border-bottom: 1px solid;
+  overflow-x: scroll;
 }
 
 .board {
@@ -120,6 +121,7 @@ body {
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  flex-shrink: 0;
   opacity: 0.3;
   box-shadow: 5px 5px 15px #534c4c;
 }
@@ -157,6 +159,7 @@ body {
 }
 
 .add-board {
+  flex-shrink: 0;
   width: 180px;
   text-align: center;
   font-size: 1.5rem;

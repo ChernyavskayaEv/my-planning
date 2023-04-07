@@ -12,24 +12,6 @@ export const getAll = async (req, res) => {
   }
 };
 
-export const getOne = async (req, res) => {
-  try {
-    const neededId = req.params.id;
-    const result = await db.getOneColumn(neededId);
-    if (!result) {
-      return res.status(404).json({
-        message: 'Колонка не найдена',
-      });
-    }
-    res.json(result);
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({
-      message: 'Не удалось получить колонку',
-    });
-  }
-};
-
 export const create = async (req, res) => {
   try {
     const result = await db.newColumn({ ...req.body });

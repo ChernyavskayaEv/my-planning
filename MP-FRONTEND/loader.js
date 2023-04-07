@@ -88,4 +88,5 @@
       .children[2].append(receivedCard);
     receivedCard.init(dataset);
   });
+  dragDrop();
 })();

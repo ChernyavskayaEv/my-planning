@@ -35,53 +35,9 @@ class CardColumn extends HTMLElement {
     return this.#data;
   }
 
-  // set orderliness(value) {
-  //   this.#data.orderliness = value;
-  // }
-
-  // set title(value) {
-  //   this.#data.title = value;
-  //   this.components.cardTitle.textContent = value;
-  //   this.components.cardColumn.classList.remove('hide');
-  // }
-
-  // set description(value) {
-  //   this.#data.description = value;
-  //   if (!this.#data.description == '') {
-  //     this.components.iconDescriptionColumn.classList.remove('hide');
-  //   } else {
-  //     this.components.iconDescriptionColumn.classList.add('hide');
-  //   }
-  // }
-
-  // set headlist(value) {
-  //   this.#data.headlist = value;
-  // }
-
-  // set list(array) {
-  //   this.#data.list = array;
-  //   if (this.#data.list.length > 0) {
-  //     this.components.blockList.classList.remove('hide');
-  //     this.components.cardListInfo.textContent = `${
-  //       this.#data.list.filter((el) => el.checking).length
-  //     }/${this.#data.list.length}`;
-  //   } else {
-  //     this.components.blockList.classList.add('hide');
-  //   }
-  // }
-
-  // set orderliness(value) {
-  //   this.#data.orderliness = value;
-  // }
-
-  // showContent() {
-  //   this.orderliness = this.#data.orderliness;
-  //   this.title = this.#data.title;
-  //   this.description = this.#data.description;
-  //   this.headlist = this.#data.headlist;
-  //   this.list = this.#data.list;
-  //   this.columnid = this.#data.columnid;
-  // }
+  showContent() {
+    this.data = this.#data;
+  }
 
   constructor() {
     super();

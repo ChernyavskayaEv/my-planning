@@ -12,24 +12,6 @@ export const getAll = async (req, res) => {
   }
 };
 
-export const getOne = async (req, res) => {
-  try {
-    const neededId = req.params.id;
-    const result = await db.getOneBoard(neededId);
-    if (!result) {
-      return res.status(404).json({
-        message: 'Доска не найдена',
-      });
-    }
-    res.json(result);
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({
-      message: 'Не удалось получить доску',
-    });
-  }
-};
-
 export const updateActive = async (req, res) => {
   try {
     const neededId = req.body.id;

@@ -12,24 +12,6 @@ export const getAll = async (req, res) => {
   }
 };
 
-export const getOne = async (req, res) => {
-  try {
-    const neededId = req.params.id;
-    const result = await db.getOneCard(neededId);
-    if (result.rowCount == 0) {
-      return res.status(404).json({
-        message: 'Карточка не найдена',
-      });
-    }
-    res.json(result.rows);
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({
-      message: 'Не удалось получить карточку',
-    });
-  }
-};
-
 export const create = async (req, res) => {
   try {
     const result = await db.newCard({ ...req.body });
@@ -74,6 +56,23 @@ export const remove = async (req, res) => {
     console.log(err);
     res.status(500).json({
       message: 'Не удалось удалить карточку',
+    });
+  }
+};
+
+export const updateplace = async (req, res) => {
+  try {
+    const result = await db.dragDropCard({ ...req.body });
+    if (result.rowCount == 0) {
+      return res.status(404).json({
+        message: 'Карточка не найдена',
+      });
+    }
+    res.json(result.command);
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      message: 'Не удалось переместить карточку',
     });
   }
 };

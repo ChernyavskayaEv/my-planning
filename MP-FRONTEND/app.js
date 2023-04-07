@@ -2,55 +2,71 @@ const boardCollection = document.querySelector('.board-collection');
 const boardDialog = document.querySelector('board-dialog');
 const columnDialog = document.querySelector('column-dialog');
 
-// function dragDrop() {
-//   const cards = document.querySelectorAll('card-column');
-//   const placeholders = document.querySelectorAll('.placeholder');
+function dragDrop() {
+  const cards = document.querySelectorAll('card-column');
+  const placeholders = document.querySelectorAll('.placeholder');
 
-//   for (const card of cards) {
-//     card.addEventListener('dragstart', dragstart);
-//     card.addEventListener('dragend', dragend);
-//   }
+  for (const card of cards) {
+    card.addEventListener('dragstart', dragstart);
+    card.addEventListener('dragend', dragend);
+  }
 
-//   function dragstart(event) {
-//     event.target.classList.add('hold');
-//     setTimeout(() => event.target.classList.add('hide'), 0);
-//   }
+  function dragstart(event) {
+    event.target.classList.add('hold');
+    setTimeout(() => event.target.classList.add('hide'), 0);
+  }
 
-//   function dragend(event) {
-//     event.target.classList.remove('hold');
-//     event.target.classList.remove('hide');
-//     event.target.showContent();
-//   }
+  function dragend(event) {
+    event.target.classList.remove('hold');
+    event.target.classList.remove('hide');
+    event.target.showContent();
+    const newOrderliness = event.target.closest('.placeholder').children.length;
+    const newColumnid = event.target.closest('.column').id.split('-')[1];
+    updatingCardPlace(
+      event.target.id.split('-')[1],
+      newOrderliness,
+      newColumnid
+    );
+  }
 
-//   for (const placeholder of placeholders) {
-//     placeholder.addEventListener('dragover', dragover);
-//     placeholder.addEventListener('dragenter', dragenter);
-//     placeholder.addEventListener('dragleave', dragleave);
-//     placeholder.addEventListener('drop', dragdrop);
-//   }
+  for (const placeholder of placeholders) {
+    placeholder.addEventListener('dragover', dragover);
+    placeholder.addEventListener('dragenter', dragenter);
+    placeholder.addEventListener('dragleave', dragleave);
+    placeholder.addEventListener('drop', dragdrop);
+  }
 
-//   function dragover(event) {
-//     event.preventDefault();
-//   }
+  function dragover(event) {
+    event.preventDefault();
+  }
 
-//   function dragenter(event) {
-//     event.target.classList.add('hovered');
-//   }
+  function dragenter(event) {
+    event.target.classList.add('hovered');
+  }
 
-//   function dragleave(event) {
-//     event.target.classList.remove('hovered');
-//   }
+  function dragleave(event) {
+    event.target.classList.remove('hovered');
+  }
 
-//   function dragdrop(event) {
-//     event.target.classList.remove('hovered');
-//     const card = document.querySelector('.hold');
-//     if (event.target.classList.contains('placeholder')) {
-//       event.target.append(card);
-//     } else {
-//       event.target.closest('card-column').parentElement.append(card);
-//     }
-//   }
-// }
+  function dragdrop(event) {
+    event.target.classList.remove('hovered');
+
+    const card = document.querySelector('.hold');
+    if (event.target.classList.contains('placeholder')) {
+      event.target.append(card);
+    } else {
+      event.target.closest('card-column').parentElement.append(card);
+    }
+  }
+}
+
+async function updatingCardPlace(id, newOrderliness, newColumnid) {
+  await fetch(`/placeForCard/${id}`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json;charset=utf-8' },
+    body: JSON.stringify({ id, newOrderliness, newColumnid }),
+  });
+}
 
 function addBlurBoardBox() {
   const boardBoxs = document.querySelectorAll('.board-box');
@@ -170,7 +186,6 @@ boardCollection.addEventListener('click', (event) => {
       boardRemoving.remove();
       boardBoxRemoving.remove();
       removeActiveBoard(boardRemoving.id);
-      console.log(document.querySelectorAll('.board').length);
       if (document.querySelectorAll('.board').length > 0) {
         const activeBoard = document.querySelectorAll('.board')[0];
         updateActiveBoard(activeBoard.id);
@@ -247,10 +262,10 @@ function addColumn() {
         columns.forEach((column) => {
           column.addEventListener('click', columnsEventHandler);
         });
-        // dragDrop();
       }
     });
   });
+  dragDrop();
 }
 
 function addCard(event) {
@@ -312,7 +327,7 @@ function closeCardModal() {
 
 function saveCardModal() {
   hideCardModal();
-  // dragDrop();
+  dragDrop();
   if (
     document.querySelector('card-dialog').querySelector('.card-title').value ==
       '' &&
@@ -351,7 +366,7 @@ function removingBoard(boardRemoving, boardBoxRemoving) {
     boardRemoving.remove();
     boardBoxRemoving.remove();
     removeActiveBoard(boardRemoving.id);
-    if (document.querySelectorAll('.board') == 0) {
+    if (document.querySelectorAll('.board') !== 0) {
       updateActiveBoard(document.querySelectorAll('.board')[0].id);
 
       const activeBoard = document.querySelectorAll('.board')[0];

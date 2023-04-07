@@ -28,7 +28,6 @@ app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, '../MP-FRONTEND')));
 
 app.get('/boards', BoardController.getAll);
-app.get('/boards/:id', BoardController.getOne);
 app.post(
   '/boards',
   boardCreateValidation,
@@ -45,7 +44,6 @@ app.patch(
 app.patch('/boards', BoardController.updateActive);
 
 app.get('/columns', ColumnController.getAll);
-app.get('/columns/:id', ColumnController.getOne);
 app.post(
   '/columns',
   columnCreateValidation,
@@ -61,7 +59,6 @@ app.patch(
 );
 
 app.get('/cards', CardController.getAll);
-app.get('/cards/:id', CardController.getOne);
 app.post(
   '/cards',
   cardCreateValidation,
@@ -75,6 +72,7 @@ app.patch(
   handleValidationErrors,
   CardController.update
 );
+app.patch('/placeForCard/:id', CardController.updateplace);
 
 app.listen(4444, (err) => {
   if (err) {

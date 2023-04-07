@@ -58,7 +58,6 @@ class CardDialog extends HTMLElement {
       columnid: '',
     };
     this.#initialState = { ...this.#data };
-    console.log('setNewCard-#data', this.#data);
   }
 
   async saveNewCard() {
@@ -88,8 +87,6 @@ class CardDialog extends HTMLElement {
       body: JSON.stringify({ ...this.#data }),
     }).then((res) => res.json());
     card.id = id;
-
-    console.log('saveNewCard-#data', this.#data);
 
     this.resetValues();
   }
@@ -133,7 +130,6 @@ class CardDialog extends HTMLElement {
         }
       });
     }
-    console.log('setOldCard-#data', this.#data);
   }
 
   async saveOldCard() {
@@ -151,7 +147,6 @@ class CardDialog extends HTMLElement {
       }
     );
     card.data = this.#data;
-    console.log('saveOldCard-#data', this.#data);
 
     await fetch(`/cards/${this.#data.id}`, {
       method: 'PATCH',

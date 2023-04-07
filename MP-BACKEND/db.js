@@ -51,7 +51,7 @@ export const updateBoard = async ({ neededId, ...fields }) => {
 export const removeBoard = async (neededId) => {
   const sql = `
   UPDATE table_boards SET orderliness = orderliness-1
-  WHERE orderliness > (SELECT orderliness from table_boards WHERE id = ${neededId});
+  WHERE orderliness > (SELECT orderliness FROM table_boards WHERE id = ${neededId});
   DELETE FROM table_boards
   WHERE id = ${neededId};`;
   const { rowCount, command } = await pool.query(sql);
@@ -88,7 +88,8 @@ export const updateColumn = async ({ neededId, ...fields }) => {
 export const removeColumn = async (neededId) => {
   const sql = `
   UPDATE table_columns SET orderliness = orderliness-1
-  WHERE orderliness > (SELECT orderliness from table_columns WHERE id = ${neededId});
+  WHERE orderliness > (SELECT orderliness FROM table_columns WHERE id = ${neededId})
+  AND board = (SELECT board FROM table_columns WHERE id = ${neededId});
   DELETE FROM table_columns 
   WHERE id = ${neededId}`;
   const { rowCount, command } = await pool.query(sql);
@@ -131,9 +132,21 @@ export const updateCard = async ({ neededId, ...fields }) => {
 export const removeCard = async (neededId) => {
   const sql = `
   UPDATE table_cards SET orderliness = orderliness-1
-  WHERE orderliness > (SELECT orderliness from table_cards WHERE id = ${neededId});
+  WHERE orderliness > (SELECT orderliness FROM table_cards WHERE id = ${neededId})
+  AND columnid = (SELECT columnid FROM table_cards WHERE id = ${neededId});
   DELETE FROM table_cards 
   WHERE id = ${neededId}`;
+  const { rowCount, command } = await pool.query(sql);
+  return { rowCount, command };
+};
+
+export const dragDropCard = async ({ id, newOrderliness, newColumnid }) => {
+  const sql = `
+  UPDATE table_cards SET orderliness = orderliness-1
+  WHERE orderliness > (SELECT orderliness FROM table_cards WHERE id = ${id})
+  AND columnid = (SELECT columnid FROM table_cards WHERE id = ${id});
+  UPDATE table_cards SET orderliness = ${newOrderliness},
+  columnid = ${newColumnid} WHERE id = ${id}`;
   const { rowCount, command } = await pool.query(sql);
   return { rowCount, command };
 };
@@ -152,4 +165,5 @@ export default {
   newCard,
   updateCard,
   removeCard,
+  dragDropCard,
 };
