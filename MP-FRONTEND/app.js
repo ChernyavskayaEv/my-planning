@@ -82,8 +82,8 @@ function removeBlurBoardBox() {
   });
 }
 
-async function updateActiveBoard(idBoard) {
-  const id = idBoard.split('-')[1];
+async function updateActiveBoard(activeBoard) {
+  const id = activeBoard.id.split('-')[1];
   const boards = document.querySelectorAll('.board');
   boards.forEach((board) => {
     board.classList.remove('active');
@@ -101,7 +101,7 @@ async function updateActiveBoard(idBoard) {
     }, 300);
     boardBox.classList.add('animate__bounceOutLeft');
     boardBox.classList.remove('animate__bounceInRight');
-    if (boardBox.classList.contains(`${idBoard}`)) {
+    if (boardBox.classList.contains(`${activeBoard.id}`)) {
       setTimeout(() => {
         boardBox.classList.remove('hide');
         boardBox.classList.add('animate__bounceInRight');
@@ -116,6 +116,11 @@ async function updateActiveBoard(idBoard) {
     headers: { 'Content-Type': 'application/json;charset=utf-8' },
     body: JSON.stringify({ id }),
   });
+
+  activeBoard.classList.add('active');
+  activeBoard.children[0].classList.remove('opacity');
+  activeBoard.children[0].classList.add('pointer');
+  activeBoard.children[1].classList.remove('pointer');
 }
 
 async function removeActiveBoard(idBoard) {
@@ -152,18 +157,13 @@ boardCollection.addEventListener('click', (event) => {
     !event.target.classList.contains('board-edit')
   ) {
     const activeBoard = event.target.parentElement;
-    updateActiveBoard(activeBoard.id);
-
-    activeBoard.classList.add('active');
-    activeBoard.children[0].classList.remove('opacity');
-    activeBoard.children[0].classList.add('pointer');
-    activeBoard.children[1].classList.remove('pointer');
+    updateActiveBoard(activeBoard);
   }
   if (
     event.target.parentElement.parentElement.classList.contains('active') &&
     event.target.classList.contains('board-edit')
   ) {
-    const oldBoard = event.target.parentElement.parentElement;
+    const oldBoard = event.target.closest('.board');
     const orderBoard =
       [...document.querySelectorAll('.board')].findIndex((item) =>
         item.classList.contains('active')
@@ -180,7 +180,7 @@ boardCollection.addEventListener('click', (event) => {
     event.target.parentElement.parentElement.classList.contains('active') &&
     event.target.classList.contains('board-remove')
   ) {
-    const boardRemoving = event.target.parentElement.parentElement;
+    const boardRemoving = event.target.closest('.board');
     const boardBoxRemoving = document.querySelector(`.${boardRemoving.id}`);
     if (boardBoxRemoving.children.length == 1) {
       boardRemoving.remove();
@@ -188,19 +188,13 @@ boardCollection.addEventListener('click', (event) => {
       removeActiveBoard(boardRemoving.id);
       if (document.querySelectorAll('.board').length > 0) {
         const activeBoard = document.querySelectorAll('.board')[0];
-        updateActiveBoard(activeBoard.id);
-
-        activeBoard.classList.add('active');
-        activeBoard.children[0].classList.remove('opacity');
-        activeBoard.children[0].classList.add('pointer');
-        activeBoard.children[1].classList.remove('pointer');
+        updateActiveBoard(activeBoard);
       }
     } else {
       addBlurBoardBox();
       document.querySelector('.question-block').classList.remove('hide');
       document.querySelector('.question-board').classList.remove('hide');
-      removingBoard(boardRemoving, boardBoxRemoving);
-      closing();
+      checkBeforeDeleting(boardRemoving, boardBoxRemoving);
     }
   }
   if (event.target.classList.contains('add-board')) {
@@ -234,19 +228,19 @@ boardCollection.addEventListener('click', (event) => {
       newBoardBox.classList.add('hide');
     }
     document.querySelector('.add-board').before(newBoardScreen);
-    addColumn();
+    const addingColumns = document.querySelectorAll('.add-column');
+    addingColumns.forEach((item) => {
+      item.addEventListener('click', addColumn);
+    });
   }
 });
 
-function addColumn() {
-  const addingColumns = document.querySelectorAll('.add-column');
-  addingColumns.forEach((item) => {
-    item.addEventListener('click', (event) => {
-      if (event.target.classList.contains('add-column')) {
-        const newColumn = document.createElement('div');
-        newColumn.classList.add('column');
-        newColumn.id = 'newColumn';
-        newColumn.innerHTML = `
+function addColumn(event) {
+  if (event.target.classList.contains('add-column')) {
+    const newColumn = document.createElement('div');
+    newColumn.classList.add('column');
+    newColumn.id = 'newColumn';
+    newColumn.innerHTML = `
            <div class="column-icon">
               <i class="fa-regular fa-pen-to-square column-edit pointer"></i>
               <i class="fa-solid fa-xmark column-remove pointer"></i>
@@ -254,17 +248,15 @@ function addColumn() {
            <p></p>
            <div class="placeholder"></div>
            <div class="add-card pointer">Добавить карточку</div>`;
-        event.target.before(newColumn);
+    event.target.before(newColumn);
 
-        columnDialog.setNewColumn();
-        columnDialog.openColumnDialog();
-        const columns = document.querySelectorAll('.column');
-        columns.forEach((column) => {
-          column.addEventListener('click', columnsEventHandler);
-        });
-      }
+    columnDialog.setNewColumn();
+    columnDialog.openColumnDialog();
+    const columns = document.querySelectorAll('.column');
+    columns.forEach((column) => {
+      column.addEventListener('click', columnsEventHandler);
     });
-  });
+  }
   dragDrop();
 }
 
@@ -361,50 +353,51 @@ function hideQuestionBlock() {
   removeBlurBoardBox();
 }
 
-function removingBoard(boardRemoving, boardBoxRemoving) {
-  document.querySelector('.yes').addEventListener('click', () => {
-    boardRemoving.remove();
-    boardBoxRemoving.remove();
-    removeActiveBoard(boardRemoving.id);
-    if (document.querySelectorAll('.board') !== 0) {
-      updateActiveBoard(document.querySelectorAll('.board')[0].id);
-
-      const activeBoard = document.querySelectorAll('.board')[0];
-      activeBoard.classList.add('active');
-      activeBoard.children[0].classList.remove('opacity');
-      activeBoard.children[0].classList.add('pointer');
-      activeBoard.children[1].classList.remove('pointer');
-    }
-    hideQuestionBlock();
-  });
+function removingBoard(boardRemoving) {
+  const boardBoxRemoving = document.querySelector(`.${boardRemoving.id}`);
+  boardRemoving.remove();
+  boardBoxRemoving.remove();
+  removeActiveBoard(boardRemoving.id);
+  if (document.querySelectorAll('.board').length > 0) {
+    const activeBoard = document.querySelectorAll('.board')[0];
+    updateActiveBoard(activeBoard);
+  }
 }
 
-function removingColumn(event) {
-  document.querySelector('.yes').addEventListener('click', () => {
-    const thisColumn = event.target.parentElement.parentElement;
-    thisColumn.remove();
-    removeActiveColumn(thisColumn.id);
-    hideQuestionBlock();
-  });
+function removingColumn(removingColumn) {
+  removingColumn.remove();
+  removeActiveColumn(removingColumn.id);
 }
 
-function removingCard(event) {
-  document.querySelector('.yes').addEventListener('click', () => {
-    const thisCard = event.target.parentElement.parentElement.parentElement;
-    thisCard.remove();
-    removeActiveCard(thisCard.id);
-    hideQuestionBlock();
-  });
+function removingCard(removingCard) {
+  removingCard.remove();
+  removeActiveCard(removingCard.id);
 }
 
-function closing() {
-  document.querySelector('.no').addEventListener('click', () => {
-    hideQuestionBlock();
-  });
+function checkBeforeDeleting(removingObject) {
+  document.querySelector('.question-block').addEventListener(
+    'click',
+    (event) => {
+      if (event.target.classList.contains('yes')) {
+        !document.querySelector('.question-board').classList.contains('hide')
+          ? removingBoard(removingObject)
+          : !document
+              .querySelector('.question-column')
+              .classList.contains('hide')
+          ? removingColumn(removingObject)
+          : removingCard(removingObject);
+        hideQuestionBlock();
+      }
+      if (event.target.classList.contains('no')) {
+        hideQuestionBlock();
+      }
+    },
+    { once: true }
+  );
 }
 
 function columnsEventHandler(event) {
-  const activeColumn = event.target.parentElement.parentElement;
+  const activeColumn = event.target.closest('.column');
   const idActiveColumn = activeColumn.id.split('-')[1];
   const boardActiveColumn = document.querySelector('.active').id;
   const orderActiveColumn =
@@ -425,8 +418,7 @@ function columnsEventHandler(event) {
       addBlurBoardBox();
       document.querySelector('.question-block').classList.remove('hide');
       document.querySelector('.question-column').classList.remove('hide');
-      removingColumn(event);
-      closing();
+      checkBeforeDeleting(activeColumn);
     } else {
       activeColumn.remove();
       removeActiveColumn(activeColumn.id);

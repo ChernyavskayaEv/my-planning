@@ -18,20 +18,20 @@ export const registerValidation = [
 
 export const boardCreateValidation = [
   body('orderliness', 'Не должно быть пусто').notEmpty(),
-  body('title', 'Введите название доски').isLength({ min: 3 }).isString(),
+  body('title', 'Введите название доски').notEmpty().isString(),
   body('background', 'Выберите фон доски').optional().isString(),
   body('active', 'Не должно быть пусто').isBoolean(),
 ];
 
 export const columnCreateValidation = [
   body('orderliness', 'Не должно быть пусто').notEmpty(),
-  body('title', 'Введите название колонки').isLength({ min: 3 }).isString(),
+  body('title', 'Введите название колонки').notEmpty().isString(),
   body('board', 'Не должно быть пусто').notEmpty(),
 ];
 
 export const cardCreateValidation = [
   body('orderliness', 'Не должно быть пусто').notEmpty(),
-  body('title', 'Введите название карточки').isLength({ min: 5 }).isString(),
+  body('title', 'Введите название карточки').notEmpty().isString(),
   body('description', 'Введите описание карточки').optional().isString(),
   body('headlist', 'Введите название чек-листа')
     .if(body('cardList').isArray({ min: 1 }))

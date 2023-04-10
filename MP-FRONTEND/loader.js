@@ -40,7 +40,10 @@
     document.querySelector('.add-board').before(receivedBoard);
     document.querySelector('board-dialog').before(receivedBoardBox);
   });
-  addColumn();
+  const addingColumns = document.querySelectorAll('.add-column');
+  addingColumns.forEach((item) => {
+    item.addEventListener('click', addColumn);
+  });
 
   const gettingColumns = await fetch('/columns', {
     method: 'GET',

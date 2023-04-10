@@ -75,7 +75,7 @@ class CardDialog extends HTMLElement {
         };
       }
     );
-    this.#data.columnid = card.parentElement.parentElement.id.split('-')[1];
+    this.#data.columnid = card.closest('.column').id.split('-')[1];
 
     card.data = this.#data;
 

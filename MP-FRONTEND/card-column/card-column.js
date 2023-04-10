@@ -63,7 +63,7 @@ class CardColumn extends HTMLElement {
     };
 
     this.components.cardColumn.addEventListener('click', (event) => {
-      const activeCard = event.target.parentElement.parentElement.parentElement;
+      const activeCard = event.target.closest('card-column');
       if (event.target.classList.contains('icon-open')) {
         const cardDialog = document.querySelector('card-dialog');
         cardDialog.setOldCard(activeCard.id.split('-')[1], this.#data);
@@ -75,8 +75,7 @@ class CardColumn extends HTMLElement {
         document.querySelector('.question-block').classList.remove('hide');
         document.querySelector('.question-card').classList.remove('hide');
 
-        removingCard(event);
-        closing();
+        checkBeforeDeleting(activeCard);
       }
     });
   }
