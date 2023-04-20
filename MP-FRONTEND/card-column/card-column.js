@@ -41,7 +41,7 @@ class CardColumn extends HTMLElement {
 
   constructor() {
     super();
-    this.#template = fetch('/card-column/card-column.html').then((res) =>
+    this.#template = myFetch('/card-column/card-column.html').then((res) =>
       res.text()
     );
   }

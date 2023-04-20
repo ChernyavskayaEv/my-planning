@@ -79,7 +79,7 @@ class CardDialog extends HTMLElement {
 
     card.data = this.#data;
 
-    const { result: id } = await fetch('/cards', {
+    const { result: id } = await myFetch('/cards', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json;charset=utf-8',
@@ -148,7 +148,7 @@ class CardDialog extends HTMLElement {
     );
     card.data = this.#data;
 
-    await fetch(`/cards/${this.#data.id}`, {
+    await myFetch(`/cards/${this.#data.id}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json;charset=utf-8' },
       body: JSON.stringify({ ...this.#data }),
@@ -233,7 +233,7 @@ class CardDialog extends HTMLElement {
 
   constructor() {
     super();
-    this.#template = fetch('/card-dialog/card-dialog.html').then((res) =>
+    this.#template = myFetch('/card-dialog/card-dialog.html').then((res) =>
       res.text()
     );
   }

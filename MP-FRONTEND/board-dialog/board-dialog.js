@@ -31,7 +31,7 @@ class BoardDialog extends HTMLElement {
       this.#data.active = false;
     }
 
-    const { result: id } = await fetch('/boards', {
+    const { result: id } = await myFetch('/boards', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json;charset=utf-8' },
       body: JSON.stringify({ ...this.#data }),
@@ -70,7 +70,7 @@ class BoardDialog extends HTMLElement {
       this.components.boardBackground.style.backgroundImage;
     this.resetValuesBoard();
 
-    await fetch(`/boards/${this.#data.id}`, {
+    await myFetch(`/boards/${this.#data.id}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json;charset=utf-8' },
       body: JSON.stringify({ ...this.#data }),
@@ -98,7 +98,7 @@ class BoardDialog extends HTMLElement {
 
   constructor() {
     super();
-    this.#template = fetch('/board-dialog/board-dialog.html').then((res) =>
+    this.#template = myFetch('/board-dialog/board-dialog.html').then((res) =>
       res.text()
     );
   }

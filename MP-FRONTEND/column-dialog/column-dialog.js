@@ -25,7 +25,7 @@ class ColumnDialog extends HTMLElement {
     this.#data.board = idActiveBoard.split('-')[1];
     this.#data.orderliness = activeBoardBox.children.length - 1;
 
-    const { result: id } = await fetch('/columns', {
+    const { result: id } = await myFetch('/columns', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json;charset=utf-8' },
       body: JSON.stringify({ ...this.#data }),
@@ -53,7 +53,7 @@ class ColumnDialog extends HTMLElement {
     updatedColumn.children[1].textContent = this.#data.title =
       this.components.columnTitle.value;
 
-    await fetch(`/columns/${this.#data.id}`, {
+    await myFetch(`/columns/${this.#data.id}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json;charset=utf-8' },
       body: JSON.stringify({ ...this.#data }),
@@ -75,7 +75,7 @@ class ColumnDialog extends HTMLElement {
 
   constructor() {
     super();
-    this.#template = fetch('/column-dialog/column-dialog.html').then((res) =>
+    this.#template = myFetch('/column-dialog/column-dialog.html').then((res) =>
       res.text()
     );
   }

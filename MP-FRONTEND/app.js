@@ -1,6 +1,141 @@
 const boardCollection = document.querySelector('.board-collection');
 const boardDialog = document.querySelector('board-dialog');
 const columnDialog = document.querySelector('column-dialog');
+const formRegister = document.querySelector('.form-register');
+const formLogin = document.querySelector('.form-login');
+const errorBlock = document.querySelector('.error-block');
+
+document.querySelector('header').addEventListener('click', (event) => {
+  if (event.target.classList.contains('make-user')) {
+    formRegister.classList.remove('hide');
+    addBlurContainer();
+  }
+  if (event.target.classList.contains('go-in')) {
+    formLogin.classList.remove('hide');
+    addBlurContainer();
+  }
+  if (event.target.classList.contains('go-out')) {
+    document.querySelector('.login').classList.add('hide');
+    document.querySelector('.register').classList.remove('hide');
+    document.querySelector('.user-name').id = '';
+    document.querySelector('.user-name').innerHTML = '';
+    window.localStorage.removeItem('token');
+
+    //скрыть показательный контейнер
+    //показать шаблон контейнера пользователя и загрузить
+  }
+});
+
+formRegister.addEventListener('submit', createUser);
+formLogin.addEventListener('submit', authUser);
+
+async function createUser(event) {
+  event.preventDefault();
+  let form = event.target;
+
+  let formData = new FormData(form);
+  let body = {};
+  for (let [key, value] of formData.entries()) {
+    body[key] = value;
+  }
+  await fetch('/auth/register', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json;charset=utf-8' },
+    body: JSON.stringify(body),
+  }).then(async (res) => {
+    document
+      .querySelectorAll('.helper')
+      .forEach((item) => item.classList.add('opacity'));
+    document
+      .querySelectorAll('.input-register')
+      .forEach((item) => item.classList.remove('error'));
+    const result = await res.json();
+    if (res.status == 200) {
+      window.localStorage.setItem('token', result.token);
+      successfulAuthorization(result);
+      closeForm(form);
+    } else if (res.status == 400) {
+      const helpers = result.map(({ param }) => param);
+      helpers.forEach((helper) => {
+        document.getElementById(`${helper}Help`).classList.remove('opacity');
+        document.getElementById(`${helper}Form`).classList.add('error');
+      });
+    } else {
+      const msg = result.message;
+      errorBlock.classList.remove('hide');
+      document.querySelector('.error-msg').innerHTML = msg;
+      form.classList.add('blur');
+    }
+  });
+}
+
+async function authUser(event) {
+  event.preventDefault();
+  let form = event.target;
+
+  let formData = new FormData(form);
+  let body = {};
+  for (let [key, value] of formData.entries()) {
+    body[key] = value;
+  }
+  await fetch('/auth/login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json;charset=utf-8' },
+    body: JSON.stringify(body),
+  }).then(async (res) => {
+    document
+      .querySelectorAll('.helper-login')
+      .forEach((item) => item.classList.add('opacity'));
+    document
+      .querySelectorAll('.input-login')
+      .forEach((item) => item.classList.remove('error'));
+    const result = await res.json();
+    if (res.status == 200) {
+      window.localStorage.setItem('token', result.token);
+      successfulAuthorization(result);
+      closeForm(form);
+      //скрыть показательный контейнер
+      //показать шаблон контейнера пользователя
+    } else if (res.status == 400) {
+      const helpers = result.map(({ param }) => param);
+      helpers.forEach((helper) => {
+        document
+          .getElementById(`${helper}HelpLogin`)
+          .classList.remove('opacity');
+        document.getElementById(`${helper}FormLogin`).classList.add('error');
+      });
+    } else {
+      const msg = result.message;
+      errorBlock.classList.remove('hide');
+      document.querySelector('.error-msg').innerHTML = msg;
+      form.classList.add('blur');
+    }
+  });
+}
+
+errorBlock.addEventListener('click', (event) => {
+  if (event.target.classList.contains('ok')) {
+    document.querySelectorAll('form').forEach((form) => {
+      closeForm(form);
+    });
+    errorBlock.classList.add('hide');
+    removeBlurContainer();
+  }
+});
+
+function successfulAuthorization(user) {
+  document.querySelector('.register').classList.add('hide');
+  document.querySelector('.login').classList.remove('hide');
+  document.querySelector('.user-name').id = user.id;
+  document.querySelector('.user-name').innerHTML = `${user.full_name}`;
+}
+
+function closeForm(form) {
+  form.reset();
+  form.classList.remove('blur');
+  form.classList.add('hide');
+  removeBlurContainer();
+}
 
 function dragDrop() {
   const cards = document.querySelectorAll('card-column');
@@ -61,11 +196,19 @@ function dragDrop() {
 }
 
 async function updatingCardPlace(id, newOrderliness, newColumnid) {
-  await fetch(`/placeForCard/${id}`, {
+  await myFetch(`/placeForCard/${id}`, {
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json;charset=utf-8' },
     body: JSON.stringify({ id, newOrderliness, newColumnid }),
   });
+}
+
+function addBlurContainer() {
+  document.querySelector('.container').classList.add('blur');
+}
+
+function removeBlurContainer() {
+  document.querySelector('.container').classList.remove('blur');
 }
 
 function addBlurBoardBox() {
@@ -111,7 +254,7 @@ async function updateActiveBoard(activeBoard) {
     }
   });
 
-  await fetch('/boards', {
+  await myFetch('/boards', {
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json;charset=utf-8' },
     body: JSON.stringify({ id }),
@@ -126,7 +269,7 @@ async function updateActiveBoard(activeBoard) {
 async function removeActiveBoard(idBoard) {
   const id = idBoard.split('-')[1];
 
-  await fetch(`/boards/${id}`, {
+  await myFetch(`/boards/${id}`, {
     method: 'DELETE',
     headers: { 'Content-Type': 'application/json;charset=utf-8' },
   });
@@ -135,7 +278,7 @@ async function removeActiveBoard(idBoard) {
 async function removeActiveColumn(idColumn) {
   const id = idColumn.split('-')[1];
 
-  await fetch(`/columns/${id}`, {
+  await myFetch(`/columns/${id}`, {
     method: 'DELETE',
     headers: { 'Content-Type': 'application/json;charset=utf-8' },
   });
@@ -144,7 +287,7 @@ async function removeActiveColumn(idColumn) {
 async function removeActiveCard(idCard) {
   const id = idCard.split('-')[1];
 
-  await fetch(`/cards/${id}`, {
+  await myFetch(`/cards/${id}`, {
     method: 'DELETE',
     headers: { 'Content-Type': 'application/json;charset=utf-8' },
   });

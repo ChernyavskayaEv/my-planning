@@ -21,58 +21,79 @@ import {
   BoardController,
   ColumnController,
   CardController,
+  UserController,
 } from './controllers/index.js';
 
 const app = express();
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, '../MP-FRONTEND')));
 
-app.get('/boards', BoardController.getAll);
+app.post(
+  '/auth/login',
+  loginValidation,
+  handleValidationErrors,
+  UserController.login
+);
+app.post(
+  '/auth/register',
+  registerValidation,
+  handleValidationErrors,
+  UserController.register
+);
+app.get('/auth/me', checkAuth, UserController.getMe);
+
+app.get('/boards', checkAuth, BoardController.getAll);
 app.post(
   '/boards',
+  checkAuth,
   boardCreateValidation,
   handleValidationErrors,
   BoardController.create
 );
-app.delete('/boards/:id', BoardController.remove);
+app.delete('/boards/:id', checkAuth, BoardController.remove);
 app.patch(
   '/boards/:id',
+  checkAuth,
   boardCreateValidation,
   handleValidationErrors,
   BoardController.update
 );
-app.patch('/boards', BoardController.updateActive);
+app.patch('/boards', checkAuth, BoardController.updateActive);
 
-app.get('/columns', ColumnController.getAll);
+app.get('/columns', checkAuth, ColumnController.getAll);
 app.post(
   '/columns',
+  checkAuth,
   columnCreateValidation,
   handleValidationErrors,
   ColumnController.create
 );
-app.delete('/columns/:id', ColumnController.remove);
+app.delete('/columns/:id', checkAuth, ColumnController.remove);
 app.patch(
   '/columns/:id',
+  checkAuth,
   columnCreateValidation,
   handleValidationErrors,
   ColumnController.update
 );
 
-app.get('/cards', CardController.getAll);
+app.get('/cards', checkAuth, CardController.getAll);
 app.post(
   '/cards',
+  checkAuth,
   cardCreateValidation,
   handleValidationErrors,
   CardController.create
 );
-app.delete('/cards/:id', CardController.remove);
+app.delete('/cards/:id', checkAuth, CardController.remove);
 app.patch(
   '/cards/:id',
+  checkAuth,
   cardCreateValidation,
   handleValidationErrors,
   CardController.update
 );
-app.patch('/placeForCard/:id', CardController.updateplace);
+app.patch('/placeForCard/:id', checkAuth, CardController.updateplace);
 
 app.listen(4444, (err) => {
   if (err) {

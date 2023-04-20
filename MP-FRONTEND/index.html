@@ -17,6 +17,92 @@
     <title>My planning</title>
   </head>
   <body>
+    <header>
+      <div class="root">
+        <div class="register">
+          <div class="go-in">Войти</div>
+          <div class="make-user">Создать аккаунт</div>
+        </div>
+        <div class="login hide">
+          <div class="go-out">Выйти</div>
+          <div class="user-name">Имя</div>
+        </div>
+      </div>
+    </header>
+    <form action="#" class="form-body form-register hide">
+      <h3 class="form-title">Создание аккаунта</h3>
+      <div class="form-item">
+        <label for="nameForm" class="form-label">Полное имя:</label>
+        <input
+          id="nameForm"
+          type="text"
+          name="name"
+          class="form-input input-register"
+        />
+        <small id="nameHelp" class="helper opacity"
+          >Укажите имя, минимум 3 символа
+        </small>
+      </div>
+      <div class="form-item">
+        <label for="emailForm" class="form-label">E-mail:</label>
+        <input
+          id="emailForm"
+          type="text"
+          name="email"
+          class="form-input input-register"
+        />
+        <small id="emailHelp" class="helper opacity"
+          >Неверный формат почты</small
+        >
+      </div>
+      <div class="form-item">
+        <label for="passwordForm" class="form-label">Пароль:</label>
+        <input
+          name="password"
+          type="password"
+          id="passwordForm"
+          class="form-input input-register"
+        />
+        <small id="passwordHelp" class="helper opacity"
+          >Пароль должен быть минимум 5 символов</small
+        >
+      </div>
+      <button type="submit" class="form-button">Зарегистрироваться</button>
+    </form>
+    <form action="#" class="form-body form-login hide">
+      <h3 class="form-title">Вход в аккаунт</h3>
+      <div class="form-item">
+        <label for="emailFormLogin" class="form-label">E-mail:</label>
+        <input
+          id="emailFormLogin"
+          type="text"
+          name="email"
+          class="form-input input-login"
+        />
+        <small id="emailHelpLogin" class="helperLogin opacity"
+          >Неверный формат почты</small
+        >
+      </div>
+      <div class="form-item">
+        <label for="passwordFormLogin" class="form-label">Пароль:</label>
+        <input
+          name="password"
+          type="password"
+          id="passwordFormLogin"
+          class="form-input input-login"
+        />
+        <small id="passwordHelpLogin" class="helper-login opacity"
+          >Пароль должен быть минимум 5 символов</small
+        >
+      </div>
+      <button type="submit" class="form-button">Войти</button>
+    </form>
+    <div class="error-block hide">
+      <p class="error-msg"></p>
+      <div class="block-button">
+        <button class="ok" type="button">Понятно</button>
+      </div>
+    </div>
     <div class="container">
       <div class="board-collection">
         <p class="add-board">Добавить доску</p>

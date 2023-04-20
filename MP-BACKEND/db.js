@@ -13,6 +13,29 @@ const config = {
 
 const pool = new Pool(config);
 
+export const newUser = async ({ ...fields }) => {
+  const params = Object.entries(fields).map(([k, v]) => v);
+  const sql = `INSERT INTO users ( full_name , email , password_hash )
+  VALUES ($1, $2, $3)
+  RETURNING id, full_name;`;
+  const { rows } = await pool.query(sql, params);
+  return rows[0];
+};
+
+export const findUser = async (emailUser) => {
+  const sql = `SELECT * FROM users
+  WHERE email = '${emailUser}';`;
+  const { rows } = await pool.query(sql);
+  return rows[0];
+};
+
+export const findMe = async (idUser) => {
+  const sql = `SELECT * FROM users
+  WHERE id = ${idUser};`;
+  const { rows } = await pool.query(sql);
+  return rows[0];
+};
+
 export const getBoards = async () => {
   const sql = `SELECT * FROM table_boards
   ORDER BY orderliness;`;
@@ -152,6 +175,9 @@ export const dragDropCard = async ({ id, newOrderliness, newColumnid }) => {
 };
 
 export default {
+  newUser,
+  findUser,
+  findMe,
   getBoards,
   updateActiveBoard,
   newBoard,

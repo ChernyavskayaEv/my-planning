@@ -89,6 +89,55 @@ body {
   background-color: #edf4f5;
 }
 
+.root {
+  width: 100vw;
+  height: 3rem;
+  padding-right: 10%;
+  display: flex;
+  justify-content: end;
+  align-items: center;
+  background: #829faa;
+  border-bottom: 1px solid;
+}
+
+.register,
+.login {
+  display: flex;
+}
+
+.register > div,
+.login > div {
+  background-color: #e5eff1;
+  color: inherit;
+  text-transform: uppercase;
+  font-size: 1rem;
+  letter-spacing: 0.1rem;
+  font-weight: bold;
+  text-shadow: 0rem 0rem 0.4rem #958e8e;
+  border-radius: 0.3rem;
+  padding: 0.3rem 0.8rem;
+  margin-left: 1.5rem;
+  cursor: pointer;
+}
+
+.login .go-out {
+  background: #b3ccd5;
+  color: #fff;
+  text-shadow: 0 0 0.4rem #000;
+}
+
+.login .user-name {
+  cursor: default;
+}
+
+.go-in:hover,
+.make-user:hover,
+.go-out:hover {
+  background-color: #d8ebee;
+  color: inherit;
+  text-shadow: inherit;
+}
+
 .container {
   width: 100vw;
   height: 100vh;
@@ -261,6 +310,8 @@ body {
   color: #757575;
 }
 
+.error-block,
+.form-body,
 .question-block,
 .prohibition-block,
 .board-dialog,
@@ -274,9 +325,50 @@ body {
   width: 30vw;
   top: 12vw;
   left: 35vw;
-  box-shadow: 1rem 1rem 1rem 1rem rgb(0 0 0 / 20%);
+  box-shadow: 0.5rem 0.5rem 0.5rem 0.5rem rgb(0, 0, 0, 0.5);
   padding: 2rem;
   z-index: 10;
+}
+
+.form-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  letter-spacing: 0.1rem;
+  margin: 0 0 1rem;
+  text-shadow: 0rem 0rem 0.4rem #958e8e;
+}
+
+.form-item {
+  width: 90%;
+  margin: 0 0 0.5rem;
+}
+
+.form-label {
+  font-size: 1.2rem;
+  font-weight: bold;
+  display: block;
+  margin: 0 0 0.5rem;
+}
+
+.form-input {
+  height: 50px;
+  padding: 0px 1rem;
+  background: #e7f2f5;
+  border: none;
+  border-radius: 0.5rem;
+  width: 100%;
+  font-size: 1.2rem;
+  transition: all 0.5s ease 0s;
+}
+
+.form-input:focus,
+.form-button:focus {
+  box-shadow: 0.2rem 0.2rem 0.5rem rgba(0, 0, 0, 0.5);
+  outline: none;
+}
+
+.form-input.error {
+  border: 1px solid #757575;
 }
 
 .prohibition-block {
@@ -352,16 +444,21 @@ input:focus {
   justify-content: space-between;
 }
 
+.error-block > p {
+  margin-bottom: 1rem;
+}
+
+.error-block .block-button,
 .board-dialog .block-button,
 .column-dialog .block-button {
   justify-content: center;
 }
 
+.error-block button,
+.form-button,
 .question-block button,
 .board-dialog .save-button,
 .column-dialog .save-button {
-  margin: 1rem auto;
-  padding: 1rem 1.5rem;
   background-color: #e5eff1;
   color: inherit;
   font-size: 1rem;
@@ -377,6 +474,11 @@ input:focus {
   margin: 0;
 }
 
+.form-button {
+  margin-top: 1rem;
+}
+
+.form-button:hover,
 .question-block button:hover,
 .board-dialog .save-button:hover,
 .column-dialog .save-button:hover {
