@@ -30,6 +30,8 @@
       </div>
     </header>
     <form action="#" class="form-body form-register hide">
+      <i class="fa-solid fa-xmark close-form"></i>
+
       <h3 class="form-title">Создание аккаунта</h3>
       <div class="form-item">
         <label for="nameForm" class="form-label">Полное имя:</label>
@@ -70,6 +72,8 @@
       <button type="submit" class="form-button">Зарегистрироваться</button>
     </form>
     <form action="#" class="form-body form-login hide">
+      <i class="fa-solid fa-xmark close-form"></i>
+
       <h3 class="form-title">Вход в аккаунт</h3>
       <div class="form-item">
         <label for="emailFormLogin" class="form-label">E-mail:</label>
@@ -103,7 +107,154 @@
         <button class="ok" type="button">Понятно</button>
       </div>
     </div>
-    <div class="container">
+    <div class="pattern-container hide">
+      <div class="pattern-board-collection">
+        <div
+          style="
+            background-image: url('https://plus.unsplash.com/premium_photo-1672896873553-7ec68031824f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHx0b3BpYy1mZWVkfDMxfGlVSXNuVnRqQjBZfHxlbnwwfHx8fA%3D%3D&auto=format&fit=crop&w=500&q=60');
+          "
+          class="pattern-board pattern-active"
+        >
+          <div class="board-icon">
+            <i class="fa-regular fa-pen-to-square"></i>
+            <i class="fa-solid fa-xmark"></i>
+          </div>
+          <p class="">Визуализируй свои планы на досках</p>
+        </div>
+        <div
+          style="
+            background-image: url('https://plus.unsplash.com/premium_photo-1672695383101-48bf96571427?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80');
+          "
+          class="pattern-board"
+        >
+          <div class="board-icon">
+            <i class="fa-regular fa-pen-to-square"></i>
+            <i class="fa-solid fa-xmark"></i>
+          </div>
+          <p class="">Добавляй, редактируй, удаляй доски</p>
+        </div>
+        <p class="pattern-add-board">Добавить доску</p>
+      </div>
+      <div class="pattern-board-box">
+        <div class="pattern-column">
+          <div class="column-icon">
+            <i class="fa-regular fa-pen-to-square"></i>
+            <i class="fa-solid fa-xmark"></i>
+          </div>
+          <p>Разделяй план на этапы выполнения по колонкам</p>
+          <div class="pattern-placeholder">
+            <div class="pattern-card">
+              <div class="pattern-box-icon">
+                <i class="fa-regular fa-pen-to-square"></i>
+                <i class="fa-solid fa-xmark"></i>
+              </div>
+              <div class="card-title">
+                Карточки - это ваши небольшие цели, желания, которые вы хотите
+                выполнить в данном направлении.
+              </div>
+              <div class="card-footer hide">
+                <i
+                  class="fa-solid fa-align-justify icon-description-column"
+                ></i>
+                <div class="block-list hide">
+                  <i class="fa-regular fa-square-check icon-list-column"></i>
+                  <div class="card-list-info"></div>
+                </div>
+              </div>
+            </div>
+            <div class="pattern-card">
+              <div class="pattern-box-icon">
+                <i class="fa-regular fa-pen-to-square"></i>
+                <i class="fa-solid fa-xmark"></i>
+              </div>
+              <div class="card-title">
+                Добавляй, редактируй, удаляй карточки.
+              </div>
+              <div class="card-footer hide">
+                <i
+                  class="fa-solid fa-align-justify icon-description-column"
+                ></i>
+                <div class="block-list hide">
+                  <i class="fa-regular fa-square-check icon-list-column"></i>
+                  <div class="card-list-info"></div>
+                </div>
+              </div>
+            </div>
+            <div class="pattern-card">
+              <div class="pattern-box-icon">
+                <i class="fa-regular fa-pen-to-square"></i>
+                <i class="fa-solid fa-xmark"></i>
+              </div>
+              <div class="card-title">
+                Каждая карточка может (не обязательно) содержать описание или
+                моменты, на которых вы хотите сделать акцент. Иконка внизу
+                карточки говорит о наличии описания
+              </div>
+              <div class="card-footer">
+                <i
+                  class="fa-solid fa-align-justify icon-description-column"
+                ></i>
+                <div class="block-list hide">
+                  <i class="fa-regular fa-square-check icon-list-column"></i>
+                  <div class="card-list-info"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="pattern-add-card">Добавить карточку</div>
+        </div>
+        <div class="pattern-column">
+          <div class="column-icon">
+            <i class="fa-regular fa-pen-to-square"></i>
+            <i class="fa-solid fa-xmark"></i>
+          </div>
+          <p>Добавляй, редактируй, удаляй колонки (этапы)</p>
+          <div class="pattern-placeholder">
+            <div class="pattern-card">
+              <div class="pattern-box-icon">
+                <i class="fa-regular fa-pen-to-square"></i>
+                <i class="fa-solid fa-xmark"></i>
+              </div>
+              <div class="card-title">
+                Каждая карточка может (не обязательно) содержать чек-лист,
+                который вы отмечаете в процессе выполнения. Иконка внизу
+                карточки говорит о наличии чек-листа и о количестве выполненных
+                пунктов.
+              </div>
+              <div class="card-footer">
+                <div class="block-list">
+                  <i class="fa-regular fa-square-check icon-list-column"></i>
+                  <div class="card-list-info">2/4</div>
+                </div>
+              </div>
+            </div>
+            <div class="pattern-card">
+              <div class="pattern-box-icon">
+                <i class="fa-regular fa-pen-to-square"></i>
+                <i class="fa-solid fa-xmark"></i>
+              </div>
+              <div class="card-title">
+                По мере работы с карточками их можно перемещать по этапам
+                (перетаскивать с колонки в колонку)
+              </div>
+              <div class="card-footer">
+                <i
+                  class="fa-solid fa-align-justify icon-description-column"
+                ></i>
+                <div class="block-list">
+                  <i class="fa-regular fa-square-check icon-list-column"></i>
+                  <div class="card-list-info">3/3</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="pattern-add-card">Добавить карточку</div>
+        </div>
+        <div class="pattern-add-column">Добавить колонку</div>
+      </div>
+    </div>
+
+    <div class="container hide">
       <div class="board-collection">
         <p class="add-board">Добавить доску</p>
       </div>

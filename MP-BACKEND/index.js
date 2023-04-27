@@ -42,7 +42,7 @@ app.post(
 );
 app.get('/auth/me', checkAuth, UserController.getMe);
 
-app.get('/boards', checkAuth, BoardController.getAll);
+app.get('/boards/:user', checkAuth, BoardController.getAll);
 app.post(
   '/boards',
   checkAuth,

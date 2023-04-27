@@ -36,8 +36,9 @@ export const findMe = async (idUser) => {
   return rows[0];
 };
 
-export const getBoards = async () => {
+export const getBoards = async (userid) => {
   const sql = `SELECT * FROM table_boards
+  WHERE userid = ${userid}
   ORDER BY orderliness;`;
   const { rows } = await pool.query(sql);
   return rows;
@@ -45,17 +46,18 @@ export const getBoards = async () => {
 
 export const newBoard = async ({ ...fields }) => {
   const params = Object.entries(fields).map(([k, v]) => v);
-  const sql = `INSERT INTO table_boards ( orderliness , title , background , active )
-  VALUES ($1, $2, $3, $4)
+  const sql = `INSERT INTO table_boards ( orderliness , title , background , active, userid )
+  VALUES ($1, $2, $3, $4, $5)
   RETURNING id;`;
   const { rows } = await pool.query(sql, params);
   return `br-${rows[0].id}`;
 };
 
-export const updateActiveBoard = async (neededId) => {
-  const sql = `UPDATE  table_boards tb SET active = false WHERE active = true;
+export const updateActiveBoard = async (userid, neededId) => {
+  const sql = `UPDATE  table_boards tb SET active = false 
+  WHERE userid = ${userid} AND active = true;
   UPDATE  table_boards tb SET active = true 
-  WHERE id = ${neededId};`;
+  WHERE userid = ${userid} AND id = ${neededId};`;
   const { rowCount, command } = await pool.query(sql);
   return { rowCount, command };
 };

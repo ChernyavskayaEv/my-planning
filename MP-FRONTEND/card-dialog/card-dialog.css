@@ -2,12 +2,12 @@
   position: fixed;
   background-color: #cfe0e5;
   border-radius: 0.5rem;
-  width: 50vw;
+  width: calc(100vw - (2 * (0px + 800 * (100vw - 320px) / (2500 - 320))));
   max-height: 80vh;
-  top: 5vw;
-  left: 25vw;
+  top: calc(25vw + 25 * (320px - 100vw) / (450 - 320));
+  left: calc(0px + 800 * (100vw - 320px) / (2500 - 320));
   box-shadow: 1rem 1rem 1rem 1rem rgb(0 0 0 / 20%);
-  padding: 2rem;
+  padding: calc(10px + 20 * (100vw - 320px) / (2500 - 320));
   z-index: 10;
   overflow: scroll;
 }
@@ -19,10 +19,10 @@
 }
 
 .card-modal .close-icon {
-  position: absolute;
+  /* position: absolute;
   width: 1rem;
   top: 1rem;
-  right: 1rem;
+  right: 1rem; */
   cursor: pointer;
 }
 
@@ -89,6 +89,10 @@
   color: #a8a5a5;
   opacity: 0.6;
   cursor: pointer;
+}
+
+.card-modal .add-description {
+  padding: 0 1.5rem;
 }
 
 .card-modal .progress-bar {
@@ -260,4 +264,21 @@ card-dialog .hide {
 
 card-dialog .line-through {
   text-decoration: line-through;
+}
+
+@media screen and (max-width: 900px) {
+  .card-modal i {
+    display: none;
+  }
+  .card-modal .close-icon {
+    display: initial;
+  }
+  .card-modal .add-list {
+    padding: 0 1.5rem;
+  }
+  .card-modal .card-field-title,
+  .card-modal .card-description,
+  .card-modal .card-list {
+    padding: 0px 0px 0px 1rem;
+  }
 }

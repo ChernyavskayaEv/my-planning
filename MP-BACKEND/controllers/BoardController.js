@@ -2,7 +2,8 @@ import db from '../db.js';
 
 export const getAll = async (req, res) => {
   try {
-    const boards = await db.getBoards();
+    const userid = req.params.user;
+    const boards = await db.getBoards(userid);
     res.json(boards);
   } catch (err) {
     console.log(err);
@@ -15,7 +16,8 @@ export const getAll = async (req, res) => {
 export const updateActive = async (req, res) => {
   try {
     const neededId = req.body.id;
-    const result = await db.updateActiveBoard(neededId);
+    const userid = req.body.userid;
+    const result = await db.updateActiveBoard(userid, neededId);
     if (result.rowCount == 0) {
       return res.status(404).json({
         message: 'Доска не найдена',

@@ -6,6 +6,7 @@ class BoardDialog extends HTMLElement {
     title: '',
     background: '',
     active: false,
+    userid: '',
   };
 
   setNewBoard() {
@@ -25,6 +26,7 @@ class BoardDialog extends HTMLElement {
     this.#data.orderliness = document.querySelectorAll('.board').length;
     board.style.backgroundImage = this.#data.background =
       this.components.boardBackground.style.backgroundImage;
+    this.#data.userid = document.querySelector('.user-name').id;
     if (document.querySelectorAll('.board')[0].id == 'newBoard') {
       this.#data.active = true;
     } else {
@@ -68,6 +70,7 @@ class BoardDialog extends HTMLElement {
       this.components.boardTitle.value;
     board.style.backgroundImage = this.#data.background =
       this.components.boardBackground.style.backgroundImage;
+    this.#data.userid = document.querySelector('.user-name').id;
     this.resetValuesBoard();
 
     await myFetch(`/boards/${this.#data.id}`, {

@@ -20,14 +20,22 @@ document.querySelector('header').addEventListener('click', (event) => {
     document.querySelector('.user-name').id = '';
     document.querySelector('.user-name').innerHTML = '';
     window.localStorage.removeItem('token');
-
-    //скрыть показательный контейнер
-    //показать шаблон контейнера пользователя и загрузить
+    document.querySelectorAll('.board').forEach((board) => board.remove());
+    document
+      .querySelectorAll('.board-box')
+      .forEach((boardBox) => boardBox.remove());
+    showPatternContainer();
   }
 });
 
 formRegister.addEventListener('submit', createUser);
 formLogin.addEventListener('submit', authUser);
+
+document.querySelectorAll('.close-form').forEach((closeIcon) => {
+  closeIcon.addEventListener('click', () =>
+    closeForm(closeIcon.closest('.form-body'))
+  );
+});
 
 async function createUser(event) {
   event.preventDefault();
@@ -54,6 +62,7 @@ async function createUser(event) {
       window.localStorage.setItem('token', result.token);
       successfulAuthorization(result);
       closeForm(form);
+      showUserContainer();
     } else if (res.status == 400) {
       const helpers = result.map(({ param }) => param);
       helpers.forEach((helper) => {
@@ -94,8 +103,8 @@ async function authUser(event) {
       window.localStorage.setItem('token', result.token);
       successfulAuthorization(result);
       closeForm(form);
-      //скрыть показательный контейнер
-      //показать шаблон контейнера пользователя
+      showUserContainer();
+      loadingUserData();
     } else if (res.status == 400) {
       const helpers = result.map(({ param }) => param);
       helpers.forEach((helper) => {
@@ -204,11 +213,11 @@ async function updatingCardPlace(id, newOrderliness, newColumnid) {
 }
 
 function addBlurContainer() {
-  document.querySelector('.container').classList.add('blur');
+  document.querySelector('.pattern-container').classList.add('blur');
 }
 
 function removeBlurContainer() {
-  document.querySelector('.container').classList.remove('blur');
+  document.querySelector('.pattern-container').classList.remove('blur');
 }
 
 function addBlurBoardBox() {
@@ -226,6 +235,7 @@ function removeBlurBoardBox() {
 }
 
 async function updateActiveBoard(activeBoard) {
+  const userid = document.querySelector('.user-name').id;
   const id = activeBoard.id.split('-')[1];
   const boards = document.querySelectorAll('.board');
   boards.forEach((board) => {
@@ -257,7 +267,7 @@ async function updateActiveBoard(activeBoard) {
   await myFetch('/boards', {
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json;charset=utf-8' },
-    body: JSON.stringify({ id }),
+    body: JSON.stringify({ userid, id }),
   });
 
   activeBoard.classList.add('active');

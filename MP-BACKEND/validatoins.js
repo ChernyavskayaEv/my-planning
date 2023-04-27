@@ -20,6 +20,7 @@ export const boardCreateValidation = [
   body('title', 'Введите название доски').notEmpty().isString(),
   body('background', 'Выберите фон доски').optional().isString(),
   body('active', 'Не должно быть пусто').isBoolean(),
+  body('userid', 'Не должно быть пусто').notEmpty(),
 ];
 
 export const columnCreateValidation = [

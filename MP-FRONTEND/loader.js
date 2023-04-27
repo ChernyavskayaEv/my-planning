@@ -13,10 +13,12 @@ async function authMe() {
   successfulAuthorization(user);
 }
 
-(async () => {
+async function loadingUserData() {
   await authMe();
 
-  const boards = await myFetch('/boards', {
+  const userid = document.querySelector('.user-name').id;
+
+  const boards = await myFetch(`/boards/${userid}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json;charset=utf-8',
@@ -39,19 +41,19 @@ async function authMe() {
     if (item.active) {
       receivedBoard.classList.add('board', 'active');
       receivedBoard.innerHTML = `
-            <div class="board-icon pointer">
-            <i class="fa-regular fa-pen-to-square board-edit"></i>
-            <i class="fa-solid fa-xmark board-remove"></i>
-          </div>
-            <p>${item.title}</p>`;
+              <div class="board-icon pointer">
+              <i class="fa-regular fa-pen-to-square board-edit"></i>
+              <i class="fa-solid fa-xmark board-remove"></i>
+            </div>
+              <p>${item.title}</p>`;
     } else {
       receivedBoard.classList.add('board');
       receivedBoard.innerHTML = `
-            <div class="board-icon opacity">
-            <i class="fa-regular fa-pen-to-square board-edit"></i>
-            <i class="fa-solid fa-xmark board-remove"></i>
-          </div>
-            <p class="pointer">${item.title}</p>`;
+              <div class="board-icon opacity">
+              <i class="fa-regular fa-pen-to-square board-edit"></i>
+              <i class="fa-solid fa-xmark board-remove"></i>
+            </div>
+              <p class="pointer">${item.title}</p>`;
       receivedBoardBox.classList.add('hide');
     }
     document.querySelector('.add-board').before(receivedBoard);
@@ -74,17 +76,18 @@ async function authMe() {
     receivedColumn.classList.add('column');
     receivedColumn.id = `cl-${item.id}`;
     receivedColumn.innerHTML = `
-                 <div class="column-icon">
-                    <i class="fa-regular fa-pen-to-square column-edit pointer"></i>
-                    <i class="fa-solid fa-xmark column-remove pointer"></i>
-                 </div>
-                 <p>${item.title}</p>
-                 <div class="placeholder"></div>
-                 <div class="add-card pointer">Добавить карточку</div>`;
+                   <div class="column-icon">
+                      <i class="fa-regular fa-pen-to-square column-edit pointer"></i>
+                      <i class="fa-solid fa-xmark column-remove pointer"></i>
+                   </div>
+                   <p>${item.title}</p>
+                   <div class="placeholder"></div>
+                   <div class="add-card pointer">Добавить карточку</div>`;
 
-    document
-      .querySelector(`.br-${item.board}`)
-      .lastChild.before(receivedColumn);
+    const neededBoard = document.querySelector(`.br-${item.board}`);
+    if (neededBoard) {
+      neededBoard.lastChild.before(receivedColumn);
+    }
   });
 
   const columns = document.querySelectorAll('.column');
@@ -103,10 +106,30 @@ async function authMe() {
     const receivedCard = document.createElement('card-column');
     receivedCard.id = `cr-${id}`;
     receivedCard.setAttribute('draggable', true);
-    document
-      .querySelector(`#cl-${dataset.columnid}`)
-      .children[2].append(receivedCard);
-    receivedCard.init(dataset);
+    const neededColumn = document.querySelector(`#cl-${dataset.columnid}`);
+    if (neededColumn) {
+      neededColumn.children[2].append(receivedCard);
+      receivedCard.init(dataset);
+    }
   });
   dragDrop();
+}
+
+function showPatternContainer() {
+  document.querySelector('.container').classList.add('hide');
+  document.querySelector('.pattern-container').classList.remove('hide');
+}
+
+function showUserContainer() {
+  document.querySelector('.pattern-container').classList.add('hide');
+  document.querySelector('.container').classList.remove('hide');
+}
+
+(async () => {
+  if (window.localStorage['token']) {
+    loadingUserData();
+    showUserContainer();
+  } else {
+    showPatternContainer();
+  }
 })();

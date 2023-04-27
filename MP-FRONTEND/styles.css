@@ -91,7 +91,7 @@ body {
 
 .root {
   width: 100vw;
-  height: 3rem;
+  min-height: 3rem;
   padding-right: 10%;
   display: flex;
   justify-content: end;
@@ -116,7 +116,10 @@ body {
   text-shadow: 0rem 0rem 0.4rem #958e8e;
   border-radius: 0.3rem;
   padding: 0.3rem 0.8rem;
-  margin-left: 1.5rem;
+  margin: 10px auto 10px 1.5rem;
+  text-align: center;
+  display: flex;
+  align-items: center;
   cursor: pointer;
 }
 
@@ -138,6 +141,7 @@ body {
   text-shadow: inherit;
 }
 
+.pattern-container,
 .container {
   width: 100vw;
   height: 100vh;
@@ -145,6 +149,7 @@ body {
   flex-direction: column;
 }
 
+.pattern-board-collection,
 .board-collection {
   width: 100vw;
   height: 200px;
@@ -157,6 +162,7 @@ body {
   overflow-x: scroll;
 }
 
+.pattern-board,
 .board {
   background: #94b2bd;
   background-repeat: no-repeat;
@@ -181,6 +187,7 @@ body {
   margin-left: 70%;
 }
 
+.board-icon > i,
 .board-edit,
 .board-remove {
   align-self: end;
@@ -189,10 +196,12 @@ body {
   text-shadow: 0 0 5px #000;
 }
 
+.pattern-active,
 .active {
   opacity: 1;
 }
 
+.pattern-board > p,
 .board > p {
   height: 80%;
   width: 100%;
@@ -203,10 +212,11 @@ body {
   font-weight: 900;
   letter-spacing: 1px;
   color: #fff;
-  text-shadow: 0 0 5px #000;
+  text-shadow: 1px 1px 2px #000, 0 0 1em #2b2828, 0 0 0.2em #2b2828;
   text-align: center;
 }
 
+.pattern-add-board,
 .add-board {
   flex-shrink: 0;
   width: 180px;
@@ -219,11 +229,13 @@ body {
   cursor: pointer;
 }
 
+.pattern-add-board::before,
 .add-board::before {
   content: '+';
   display: block;
 }
 
+.pattern-board-box,
 .board-box {
   min-width: 100vw;
   height: 100vh;
@@ -234,6 +246,7 @@ body {
   overflow-x: scroll;
 }
 
+.pattern-add-column,
 .add-column {
   width: max-content;
   height: max-content;
@@ -246,12 +259,14 @@ body {
   text-shadow: 0.05rem 0.05rem 0.1rem #bfb8b8;
 }
 
+.pattern-add-column::before,
 .add-column::before {
   content: '+';
   padding-right: 0.4rem;
   color: #757575;
 }
 
+.pattern-column,
 .column {
   width: 300px;
   height: max-content;
@@ -271,10 +286,12 @@ body {
   justify-content: end;
 }
 
+.column-icon > i,
 .column-remove {
   margin-left: 15px;
 }
 
+.pattern-column > p,
 .column > p {
   width: 100%;
   justify-content: start;
@@ -284,6 +301,7 @@ body {
   text-shadow: 0.05rem 0.05rem 0.1rem #bfb8b8;
 }
 
+.pattern-placeholder,
 .placeholder {
   width: 100%;
   min-height: 2vw;
@@ -294,20 +312,58 @@ body {
 }
 
 .card,
+.pattern-add-card,
 .add-card {
   width: 100%;
 }
 
+.pattern-add-card,
 .add-card,
 .add-list-item {
   color: #757575;
 }
 
+.pattern-add-card::before,
 .add-card::before,
 .add-list-item::before {
   content: '+';
   padding-right: 0.4rem;
   color: #757575;
+}
+
+.pattern-card {
+  width: 100%;
+  margin: 0.5rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  border-radius: 0.5rem;
+  background: #e5eff1;
+  padding: 1rem;
+  cursor: grab;
+}
+
+.pattern-box-icon {
+  text-align: end;
+}
+
+.pattern-box-icon > i {
+  margin-left: 0.5rem;
+}
+
+.card-footer {
+  display: flex;
+  gap: 2rem;
+  font-size: 0.9rem;
+}
+
+.block-list {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.card-list-info {
+  line-height: 1;
 }
 
 .error-block,
@@ -322,12 +378,22 @@ body {
   flex-direction: column;
   background-color: #cfe0e5;
   border-radius: 0.5rem;
-  width: 30vw;
-  top: 12vw;
-  left: 35vw;
+  width: calc(100vw - (2 * (0px + 1000 * (100vw - 320px) / (2500 - 320))));
+  top: calc(50vw + 50 * (320px - 100vw) / (450 - 320));
+  left: calc(0px + 1000 * (100vw - 320px) / (2500 - 320));
   box-shadow: 0.5rem 0.5rem 0.5rem 0.5rem rgb(0, 0, 0, 0.5);
   padding: 2rem;
   z-index: 10;
+}
+
+.form-body {
+  top: calc(25vw + 30 * (320px - 100vw) / (450 - 320));
+  padding: calc(30px + 30 * (100vw - 320px) / (2500 - 320));
+}
+
+.close-form {
+  width: 100%;
+  text-align: end;
 }
 
 .form-title {
@@ -339,7 +405,7 @@ body {
 }
 
 .form-item {
-  width: 90%;
+  width: 100%;
   margin: 0 0 0.5rem;
 }
 
